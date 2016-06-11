@@ -1,0 +1,54 @@
+{
+  "name": "shiitake",
+  "version": "0.0.1",
+  "description": "Shiitake - line clamp that won't get you fired",
+  "main": "index.jsx",
+  "scripts": {
+    "dev": "node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack.config.js --hot --inline --content-base demo"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alicoding/react-webpack-babel"
+  },
+  "keywords": [
+    "React",
+    "Webpack",
+    "Babel",
+    "Starter",
+    "template"
+  ],
+  "author": "Ben Sidelinger",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alicoding/react-webpack-babel/issues"
+  },
+  "homepage": "https://github.com/alicoding/react-webpack-babel#readme",
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "json-loader": "*",
+    "json5-loader": "*",
+    "jsx-loader": "*",
+    "node-libs-browser": "*",
+    "react": "^15.1.0",
+    "react-dom": "^15.1.0"
+  },
+  "devDependencies": {
+    "babel-core": "*",
+    "babel-loader": "*",
+    "babel-preset-es2015": "*",
+    "babel-preset-react": "*",
+    "babel-preset-stage-0": "*",
+    "css-loader": "*",
+    "eslint": "*",
+    "eslint-config-airbnb": "*",
+    "eslint-plugin-import": "*",
+    "eslint-plugin-jsx-a11y": "*",
+    "eslint-plugin-react": "*",
+    "file-loader": "*",
+    "react-hot-loader": "*",
+    "style-loader": "*",
+    "url-loader": "*",
+    "webpack": "*",
+    "webpack-dev-server": "*"
+  }
+}
