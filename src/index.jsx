@@ -3,128 +3,98 @@
  * @description React line clamp that won't get you fired
  */
 
-/* eslint react/no-multi-comp: 0, react/no-did-mount-set-state: 0 */
-
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import assert from 'assert';
 
-const throttleRate = 200;
+import ResizeCore from './ResizeCore';
+import { getLines } from './functions';
 
-function getString(fullString, lineHeight, height, targetLines) {
-  const currentLines = Math.round(height / lineHeight);
-  const trimPercentage = Math.round((targetLines / currentLines) * 100);
-  const endLength = fullString.length * (trimPercentage / 100);
-  const lastSpace = fullString.indexOf(' ', endLength);
+const sizerWrapperStyles = {
+  position: 'absolute',
+  left: '-10000px',
+  width: '150%',
+};
 
-  if (lastSpace < 0) {
-    return fullString;
+const sizerStyles = {
+  display: 'inline-block',
+};
+
+export default class extends ResizeCore {
+  state = {
+    lastCalculatedWidth: 0,
+    children: '',
+    lineWidthContent: 'W',
+    fixHeight: false,
   }
-
-  return fullString.substring(0, lastSpace);
-}
-
-class ResizeWrapper extends React.Component {
 
   static propTypes = {
-    onWindowResize: PropTypes.func,
-  };
-
-  constructor() {
-    super();
-    this.handleResize = this.handleResize.bind(this);
+    className: PropTypes.string,
+    children: PropTypes.string.isRequired,
   }
 
-  componentDidMount() {
-    if (this.props.onWindowResize) {
-      window.addEventListener('resize', this.handleResize);
-    }
-  }
+  // this is the meat of the component, it adds the trimmed content to state and fills the sizer on resize events
+  handleResize() {
+    const wrapper = ReactDOM.findDOMNode(this.refs.wrapper);
+    const availableWidth = wrapper.offsetWidth;
 
-  componentWillUnmount() {
-    if (this.props.onWindowResize) {
-      window.removeEventListener('resize', this.handleResize);
-    }
-  }
+    // was there a width change?
+    if (availableWidth !== this.state.lastCalculatedWidth) {
+      const sizer = ReactDOM.findDOMNode(this.refs.sizer);
+      const fixHeight = sizer.offsetHeight;
+      const addingChildren = (this.state.lastCalculatedWidth < availableWidth);
+      const keepGoing = (addingChildren) ? (sizer.offsetWidth < availableWidth) : (sizer.offsetWidth > availableWidth);
 
-  handleResize(event) {
-    if (typeof this.props.onWindowResize === 'function') {
-      // we want this to fire immediately the first time but wait to fire again
-      // that way when you hit a break it happens fast and only lags if you hit another break immediately
-      if (!this.resizeTimer) {
-        this.props.onWindowResize(event);
-        this.resizeTimer = setTimeout(() => {
-          this.resizeTimer = false;
-        }, throttleRate);
+      // have we re-populated the sizer enough?
+      if (keepGoing) {
+        const lineWidthContentLength = this.state.lineWidthContent.length;
+        const newTrimIndex = (addingChildren) ? lineWidthContentLength + 1 : lineWidthContentLength - 1;
+
+        // have we used it all?
+        if (newTrimIndex < this.props.children.length) {
+          // nope, add/remove one and fix the height during the transition
+          // if we haven't added any children, just give it all the props.children as we're fixing height anyway
+          const children = (this.state.children.length > 0) ? this.state.children : this.props.children;
+
+          this.setState({ fixHeight, children, lineWidthContent: this.props.children.substring(0, newTrimIndex) });
+
+          setTimeout(() => { this.handleResize(); }, 0);
+        } else {
+          // just add it all
+          this.setState({ children: this.props.children, lastCalculatedWidth: availableWidth, fixHeight });
+        }
+      } else {
+        // we've just finished populating the sizer, so we can compute the string
+        const children = getLines(this.props.children, this.state.lineWidthContent.length, this.props.lines).join(' ');
+        this.setState({ children, lastCalculatedWidth: availableWidth, fixHeight });
       }
     }
   }
 
   render() {
-    return (<div />);
-  }
-}
+    const { fixHeight } = this.state;
 
-export default class extends React.Component {
-  constructor() {
-    super();
+    const wrapperStyles = { position: 'relative' };
+    if (fixHeight) {
+      wrapperStyles.height = `${fixHeight}px`;
+      wrapperStyles.overflow = 'hidden';
+    }
 
-    this.handleResize = this.handleResize.bind(this);
-  }
-
-  state = {
-    testRender: true,
-    timer: null,
-    currentHeight: null,
-  }
-
-  componentDidMount() {
-    this.handleResize();
-  }
-
-  handleResize() {
-    // test render
-    let currentHeight = ReactDOM.findDOMNode(this.refs.wrapper).offsetHeight;
-    this.setState({ testRender: true, children: null, currentHeight });
-
-    clearTimeout(this.timer);
-
-    // flush the stack then do the real render
-    this.timer = setTimeout(() => {
-      const lineHeight = ReactDOM.findDOMNode(this.refs.sizer).offsetHeight;
-      currentHeight = ReactDOM.findDOMNode(this.refs.content).offsetHeight;
-
-      const children = getString(this.props.children, lineHeight, currentHeight, this.props.lines);
-
-      this.setState({ testRender: false, children, currentHeight: null });
-    }, 0);
-  }
-
-  render() {
-    assert(typeof this.props.children === 'string', 'You must only have text as the child of Shiitake');
-    const { testRender, currentHeight } = this.state;
-
-    // make the text transparent on the first render flow to measure without displaying
-    // fix the height if it a re-render on window size
-    const wrapperStyles = (testRender) ? {
-      height: `${currentHeight}px`,
-      overflow: 'hidden',
-      color: 'transparent',
-    } : {};
-
-    // this can be used to measure a nested line of text
-    const sizerStyles = {
-      position: 'absolute',
-      left: '-10000px',
-    };
+    const vertSpacers = [];
+    for (let i = 1; i < this.props.lines; i++) {
+      vertSpacers.push(<div>W</div>);
+    }
 
     return (
-      <div className="shiitake" ref="wrapper" style={wrapperStyles}>
-        <ResizeWrapper onWindowResize={this.handleResize} />
-        <div style={sizerStyles} ref="sizer">WWW</div>
+      <div className={this.props.className || ''}>
+        <div ref="wrapper" style={wrapperStyles}>
+          <div style={sizerWrapperStyles}>
+            <div style={sizerStyles} ref="sizer">
+              {this.state.lineWidthContent}
+              {vertSpacers}
+            </div>
+          </div>
 
-        <div ref="content">
-          {this.state.children || this.props.children}
+          {this.state.children}
         </div>
       </div>
     );

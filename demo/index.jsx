@@ -5,14 +5,22 @@ import Shiitake from '../src/index.jsx';
 
 export class App extends React.Component {
   render() {
+    const text = 'Now we\'re going to be doing some cooking with shiitake mushrooms.';
+
     return (
       <div className="wrapper">
         <h1>Shiitake Demo</h1>
-        <Shiitake lines="3">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vel euismod dolor, at accumsan urna.
-          Phasellus fermentum sagittis nisi vel hendrerit. Lorem ipsum dolor sit amet, consectetur
-          adipiscing elit.
-        </Shiitake>
+        <div className="side-by-side">
+          <Shiitake lines="2" throttleRate={200} className="shiitake">
+            {text}
+          </Shiitake>
+          <div className="line-clamp">
+            {text}
+          </div>
+        </div>
+        <p className="read-more">
+          read more <a href="https://github.com/bsidelinger912/shiitake#readme">here</a>.
+        </p>
       </div>
 		);
   }

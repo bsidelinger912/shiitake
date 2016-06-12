@@ -1,8 +1,20 @@
-.wrapper {
-    width: 50%;
-    border: 1px solid black;
-    padding: 5px;
-    box-sizing: border-box;
-    font-size: 22px;
-    line-height: 1em;
+.side-by-side {
+  width: 100%;
+  font-size: 36px;
+  line-height: 1em;
+  display: flex;
+}
+
+.side-by-side > div {
+  width: 50%;
+  border: 1px solid black;
+  padding: 5px;
+}
+
+.line-clamp {
+  display:none !important;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

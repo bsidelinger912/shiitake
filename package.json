@@ -2,27 +2,25 @@
   "name": "shiitake",
   "version": "0.0.1",
   "description": "Shiitake - line clamp that won't get you fired",
-  "main": "index.jsx",
+  "main": "src/index.jsx",
   "scripts": {
+    "build": "NODE_ENV=production node_modules/webpack/bin/webpack.js -p --colors --display-error-details --config webpack.dist.js",
     "dev": "node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack.config.js --hot --inline --content-base demo"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/alicoding/react-webpack-babel"
+    "url": "https://github.com/bsidelinger912/shiitake"
   },
   "keywords": [
     "React",
-    "Webpack",
-    "Babel",
-    "Starter",
-    "template"
+    "Line clamp"
   ],
   "author": "Ben Sidelinger",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/alicoding/react-webpack-babel/issues"
+    "url": "https://github.com/bsidelinger912/shiitake/issues"
   },
-  "homepage": "https://github.com/alicoding/react-webpack-babel#readme",
+  "homepage": "https://github.com/bsidelinger912/shiitake#readme",
   "dependencies": {
     "bootstrap": "^3.3.6",
     "json-loader": "*",
@@ -34,6 +32,7 @@
   },
   "devDependencies": {
     "babel-core": "*",
+    "babel-eslint": "^6.0.4",
     "babel-loader": "*",
     "babel-preset-es2015": "*",
     "babel-preset-react": "*",
