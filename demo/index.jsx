@@ -5,7 +5,7 @@ import Shiitake from '../src/index.jsx';
 
 export class App extends React.Component {
   render() {
-    const text = 'Now we\'re going to be doing some cooking with shiitake mushrooms.';
+    const text = 'Cook it up all night with Shitakes';
 
     return (
       <div className="wrapper">
