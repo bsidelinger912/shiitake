@@ -21,15 +21,11 @@
     "url": "https://github.com/bsidelinger912/shiitake/issues"
   },
   "homepage": "https://github.com/bsidelinger912/shiitake#readme",
-  "dependencies": {
-    "bootstrap": "^3.3.6",
-    "json-loader": "*",
-    "json5-loader": "*",
-    "jsx-loader": "*",
-    "node-libs-browser": "*",
+  "peerDependencies": {
     "react": "^15.1.0",
-    "react-dom": "^15.1.0"
-  },
+    "react-dom": "^15.1.0",
+  }
+  "dependencies": {},
   "devDependencies": {
     "babel-core": "*",
     "babel-eslint": "^6.0.4",
@@ -44,6 +40,8 @@
     "eslint-plugin-jsx-a11y": "*",
     "eslint-plugin-react": "*",
     "file-loader": "*",
+    "react": "^15.1.0",
+    "react-dom": "^15.1.0",
     "react-hot-loader": "*",
     "style-loader": "*",
     "url-loader": "*",
