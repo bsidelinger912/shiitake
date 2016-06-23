@@ -2,9 +2,12 @@
   "name": "shiitake",
   "version": "0.1.0",
   "description": "Shiitake - line clamp that won't get you fired",
-  "main": "src/index.jsx",
+  "main": "dist/index.jsx",
   "scripts": {
-    "build": "NODE_ENV=production node_modules/webpack/bin/webpack.js -p --colors --display-error-details --config webpack.dist.js",
+    "build": "npm run clean && npm run transpile && npm run bundle",
+    "bundle": "NODE_ENV=production node_modules/webpack/bin/webpack.js -p --colors --display-error-details --config webpack.dist.js",
+    "clean": "rm -rf dist && mkdir dist",
+    "transpile": "babel src --out-dir dist",
     "dev": "node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack.config.js --hot --inline --content-base demo"
   },
   "repository": {
@@ -27,6 +30,7 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "babel-cli": "^6.10.1",
     "babel-core": "*",
     "babel-eslint": "^6.0.4",
     "babel-loader": "*",
