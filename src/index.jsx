@@ -7,17 +7,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 
 import ResizeCore from './ResizeCore';
-
-const sizerWrapperStyles = {
-  position: 'relative',
-  top: '20000px',
-  width: '100%',
-};
-
-const wrapperStyles = {
-  position: 'relative',
-  overflow: 'hidden',
-};
+import { wrapperStyles, childrenStyles, block, spreaderStyles, sizerWrapperStyles, setTag } from './constants';
 
 export default class extends ResizeCore {
   state = {
@@ -27,6 +17,7 @@ export default class extends ResizeCore {
   }
 
   static propTypes = {
+    lines: PropTypes.number.isRequired,
     className: PropTypes.string,
     children: PropTypes.string.isRequired,
   }
@@ -75,7 +66,7 @@ export default class extends ResizeCore {
 
   // adds the trimmed content to state and fills the sizer on resize events
   handleResize() {
-    const availableWidth = ReactDOM.findDOMNode(this.refs.content).offsetWidth;
+    const availableWidth = ReactDOM.findDOMNode(this.refs.spreader).offsetWidth;
     this._targetHeight = ReactDOM.findDOMNode(this.refs.sizer).offsetHeight;
 
     // set the max height right away, so that the resize throttle doesn't allow line break jumps
@@ -94,22 +85,26 @@ export default class extends ResizeCore {
 
   render() {
     const { fixHeight, children, testChildren } = this.state;
+    const tagNames = { main: setTag(this.props.tagName) };
 
     const vertSpacers = [];
     for (let i = 0; i < this.props.lines; i++) {
-      vertSpacers.push(<div key={i}>W</div>);
+      vertSpacers.push(<span style={block} key={i}>W</span>);
     }
 
     return (
-      <div className={this.props.className || ''}>
-        <div style={{ ...wrapperStyles, maxHeight: `${fixHeight || 0}px` }}>
-          <div ref="content" style={{ width: '100%' }}>{children}</div>
-          <div style={sizerWrapperStyles}>
-            <div ref="sizer">{vertSpacers}</div>
-            <div ref="testChildren">{testChildren}</div>
-          </div>
-        </div>
-      </div>
+      <tagNames.main className={this.props.className || ''}>
+        <span style={{ ...wrapperStyles, maxHeight: `${fixHeight || 0}px` }}>
+          <span style={childrenStyles}>{children}</span>
+
+          <span ref="spreader" style={spreaderStyles}>{this.props.children}</span>
+
+          <span style={sizerWrapperStyles}>
+            <span ref="sizer" style={block}>{vertSpacers}</span>
+            <span ref="testChildren" style={block}>{testChildren}</span>
+          </span>
+        </span>
+      </tagNames.main>
     );
   }
 }

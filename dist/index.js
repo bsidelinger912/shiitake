@@ -20,6 +20,8 @@ var _ResizeCore2 = require('./ResizeCore');
 
 var _ResizeCore3 = _interopRequireDefault(_ResizeCore2);
 
+var _constants = require('./constants');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -30,17 +32,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * @class Shiitake
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * @description React line clamp that won't get you fired
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
-
-var sizerWrapperStyles = {
-  position: 'relative',
-  top: '20000px',
-  width: '100%'
-};
-
-var wrapperStyles = {
-  position: 'relative',
-  overflow: 'hidden'
-};
 
 var _class = function (_ResizeCore) {
   _inherits(_class, _ResizeCore);
@@ -129,7 +120,7 @@ var _class = function (_ResizeCore) {
   }, {
     key: 'handleResize',
     value: function handleResize() {
-      var availableWidth = _reactDom2.default.findDOMNode(this.refs.content).offsetWidth;
+      var availableWidth = _reactDom2.default.findDOMNode(this.refs.spreader).offsetWidth;
       this._targetHeight = _reactDom2.default.findDOMNode(this.refs.sizer).offsetHeight;
 
       // set the max height right away, so that the resize throttle doesn't allow line break jumps
@@ -153,38 +144,44 @@ var _class = function (_ResizeCore) {
       var children = _state.children;
       var testChildren = _state.testChildren;
 
+      var tagNames = { main: (0, _constants.setTag)(this.props.tagName) };
 
       var vertSpacers = [];
       for (var i = 0; i < this.props.lines; i++) {
         vertSpacers.push(_react2.default.createElement(
-          'div',
-          { key: i },
+          'span',
+          { style: _constants.block, key: i },
           'W'
         ));
       }
 
       return _react2.default.createElement(
-        'div',
+        tagNames.main,
         { className: this.props.className || '' },
         _react2.default.createElement(
-          'div',
-          { style: _extends({}, wrapperStyles, { maxHeight: (fixHeight || 0) + 'px' }) },
+          'span',
+          { style: _extends({}, _constants.wrapperStyles, { maxHeight: (fixHeight || 0) + 'px' }) },
           _react2.default.createElement(
-            'div',
-            { ref: 'content', style: { width: '100%' } },
+            'span',
+            { style: _constants.childrenStyles },
             children
           ),
           _react2.default.createElement(
-            'div',
-            { style: sizerWrapperStyles },
+            'span',
+            { ref: 'spreader', style: _constants.spreaderStyles },
+            this.props.children
+          ),
+          _react2.default.createElement(
+            'span',
+            { style: _constants.sizerWrapperStyles },
             _react2.default.createElement(
-              'div',
-              { ref: 'sizer' },
+              'span',
+              { ref: 'sizer', style: _constants.block },
               vertSpacers
             ),
             _react2.default.createElement(
-              'div',
-              { ref: 'testChildren' },
+              'span',
+              { ref: 'testChildren', style: _constants.block },
               testChildren
             )
           )

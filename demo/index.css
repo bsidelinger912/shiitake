@@ -24,6 +24,11 @@
   display: inline-block;
 }*/
 
+.shiitake-paragraph {
+  margin: 0 0 50px;
+  width: 25%;
+}
+
 .line-clamp {
   display: -webkit-box;
   -webkit-line-clamp: 2;

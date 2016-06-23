@@ -1,6 +1,7 @@
 const path = require('path');
 const config = require('./webpack.config.js');
 
+// TODO exclude vendor files!!
 config.entry = {
   shiitake: './src',
 };
