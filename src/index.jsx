@@ -22,6 +22,12 @@ export default class extends ResizeCore {
     children: PropTypes.string.isRequired,
   }
 
+  _callDeffered(func) {
+    setTimeout(() => {
+      if (Object.keys(this.refs).length > 0) { func.bind(this)(); }
+    }, 0);
+  }
+
   _checkHeight(adjustDown) {
     const contentHeight = ReactDOM.findDOMNode(this.refs.testChildren).offsetHeight;
     return (adjustDown) ? (contentHeight <= this._targetHeight) : (contentHeight > this._targetHeight);
@@ -31,22 +37,22 @@ export default class extends ResizeCore {
   _adjustDown() {
     if (this.state.testChildren === '') {
       this.setState({ testChildren: this.props.children });
-      setTimeout(() => { this._adjustDown(); }, 0);
+      this._callDeffered(this._adjustDown);
     } else if (this._checkHeight(true)) {
       this._setChildren();
     } else {
       this.setState({ testChildren: this.state.testChildren.slice(0, -1) });
-      setTimeout(() => { this._adjustDown(); }, 0);
+      this._callDeffered(this._adjustDown);
     }
   }
 
   _adjustUp() {
     // have we used all our characters?
     if (this._checkHeight(false)) {
-      setTimeout(() => { this._adjustDown(); }, 0);
+      this._callDeffered(this._adjustDown);
     } else if (this.state.testChildren.length !== this.props.children.length) {
       this.setState({ testChildren: this.props.children.substring(0, this.state.testChildren.length + 1) });
-      setTimeout(() => { this._adjustUp(); }, 0);
+      this._callDeffered(this._adjustUp);
     } else {
       this._setChildren();
     }
@@ -66,7 +72,7 @@ export default class extends ResizeCore {
 
   // adds the trimmed content to state and fills the sizer on resize events
   handleResize() {
-    // if we don't have refs, let it come around again
+    // if we don't have a spreader, let it come around again
     if (!this.refs.spreader) { return; }
 
     const availableWidth = ReactDOM.findDOMNode(this.refs.spreader).offsetWidth;

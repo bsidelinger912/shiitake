@@ -55,6 +55,17 @@ var _class = function (_ResizeCore) {
   }
 
   _createClass(_class, [{
+    key: '_callDeffered',
+    value: function _callDeffered(func) {
+      var _this2 = this;
+
+      setTimeout(function () {
+        if (Object.keys(_this2.refs).length > 0) {
+          func.bind(_this2)();
+        }
+      }, 0);
+    }
+  }, {
     key: '_checkHeight',
     value: function _checkHeight(adjustDown) {
       var contentHeight = _reactDom2.default.findDOMNode(this.refs.testChildren).offsetHeight;
@@ -66,37 +77,25 @@ var _class = function (_ResizeCore) {
   }, {
     key: '_adjustDown',
     value: function _adjustDown() {
-      var _this2 = this;
-
       if (this.state.testChildren === '') {
         this.setState({ testChildren: this.props.children });
-        setTimeout(function () {
-          _this2._adjustDown();
-        }, 0);
+        this._callDeffered(this._adjustDown);
       } else if (this._checkHeight(true)) {
         this._setChildren();
       } else {
         this.setState({ testChildren: this.state.testChildren.slice(0, -1) });
-        setTimeout(function () {
-          _this2._adjustDown();
-        }, 0);
+        this._callDeffered(this._adjustDown);
       }
     }
   }, {
     key: '_adjustUp',
     value: function _adjustUp() {
-      var _this3 = this;
-
       // have we used all our characters?
       if (this._checkHeight(false)) {
-        setTimeout(function () {
-          _this3._adjustDown();
-        }, 0);
+        this._callDeffered(this._adjustDown);
       } else if (this.state.testChildren.length !== this.props.children.length) {
         this.setState({ testChildren: this.props.children.substring(0, this.state.testChildren.length + 1) });
-        setTimeout(function () {
-          _this3._adjustUp();
-        }, 0);
+        this._callDeffered(this._adjustUp);
       } else {
         this._setChildren();
       }
@@ -120,7 +119,7 @@ var _class = function (_ResizeCore) {
   }, {
     key: 'handleResize',
     value: function handleResize() {
-      // if we don't have refs, let it come around again
+      // if we don't have a spreader, let it come around again
       if (!this.refs.spreader) {
         return;
       }
