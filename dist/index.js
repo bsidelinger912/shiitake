@@ -194,6 +194,7 @@ var _class = function (_ResizeCore) {
 }(_ResizeCore3.default);
 
 _class.propTypes = {
+  lines: _react.PropTypes.number.isRequired,
   className: _react.PropTypes.string,
   children: _react.PropTypes.string.isRequired
 };
