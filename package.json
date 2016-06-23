@@ -2,7 +2,7 @@
   "name": "shiitake",
   "version": "0.1.3",
   "description": "Shiitake - line clamp that won't get you fired",
-  "main": "dist/index.jsx",
+  "main": "dist/index.js",
   "scripts": {
     "build": "npm run clean && npm run transpile && npm run bundle",
     "bundle": "NODE_ENV=production node_modules/webpack/bin/webpack.js -p --colors --display-error-details --config webpack.dist.js",

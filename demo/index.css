@@ -3,13 +3,26 @@
   font-size: 36px;
   line-height: 1em;
   display: flex;
+  margin-bottom: 50px;
 }
 
 .side-by-side > div {
   width: 50%;
   border: 1px solid black;
   padding: 5px;
+  box-sizing: border-box;
 }
+
+.shiitake-inline-wrapper {
+  width: 50%;
+  margin-bottom: 50px;
+  font-size: 36px;
+  display: flex;
+}
+
+/* .shiitake-inline {
+  display: inline-block;
+}*/
 
 .line-clamp {
   display: -webkit-box;

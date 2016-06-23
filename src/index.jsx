@@ -9,10 +9,14 @@ import ReactDOM from 'react-dom';
 import ResizeCore from './ResizeCore';
 
 const sizerWrapperStyles = {
-  position: 'absolute',
-  left: '-100000px',
-  top: '200px',
+  position: 'relative',
+  top: '20000px',
   width: '100%',
+};
+
+const wrapperStyles = {
+  position: 'relative',
+  overflow: 'hidden',
 };
 
 export default class extends ResizeCore {
@@ -91,14 +95,6 @@ export default class extends ResizeCore {
   render() {
     const { fixHeight, children, testChildren } = this.state;
 
-    const wrapperStyles = { position: 'relative' };
-
-    // the idea here is to fix the height while were adding/removing from the test container
-    if (fixHeight) {
-      wrapperStyles.maxHeight = `${fixHeight}px`;
-      wrapperStyles.overflow = 'hidden';
-    }
-
     const vertSpacers = [];
     for (let i = 0; i < this.props.lines; i++) {
       vertSpacers.push(<div key={i}>W</div>);
@@ -106,12 +102,12 @@ export default class extends ResizeCore {
 
     return (
       <div className={this.props.className || ''}>
-        <div style={wrapperStyles}>
+        <div style={{ ...wrapperStyles, maxHeight: `${fixHeight || 0}px` }}>
+          <div ref="content" style={{ width: '100%' }}>{children}</div>
           <div style={sizerWrapperStyles}>
             <div ref="sizer">{vertSpacers}</div>
             <div ref="testChildren">{testChildren}</div>
           </div>
-          <div ref="content" style={{ width: '100%' }}>{children}</div>
         </div>
       </div>
     );

@@ -18,6 +18,12 @@ export class App extends React.Component {
             {text}
           </div>
         </div>
+        <div className="shiitake-inline-wrapper">
+          <Shiitake lines="1" throttleRate={200} className="shiitake-inline">
+            {text}
+          </Shiitake>
+          >
+        </div>
         <p className="read-more">
           read more <a href="https://github.com/bsidelinger912/shiitake#readme">here</a>.
         </p>
