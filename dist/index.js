@@ -112,7 +112,7 @@ var _class = function (_ResizeCore) {
         children = children.join(' ') + '...';
       }
 
-      this.setState({ children: children }); // , fixHeight: null });
+      this.setState({ children: children });
     }
 
     // adds the trimmed content to state and fills the sizer on resize events
@@ -120,6 +120,11 @@ var _class = function (_ResizeCore) {
   }, {
     key: 'handleResize',
     value: function handleResize() {
+      // if we don't have refs, let it come around again
+      if (!this.refs.spreader) {
+        return;
+      }
+
       var availableWidth = _reactDom2.default.findDOMNode(this.refs.spreader).offsetWidth;
       this._targetHeight = _reactDom2.default.findDOMNode(this.refs.sizer).offsetHeight;
 

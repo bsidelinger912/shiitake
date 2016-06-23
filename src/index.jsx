@@ -61,11 +61,14 @@ export default class extends ResizeCore {
       children = `${children.join(' ')}...`;
     }
 
-    this.setState({ children }); // , fixHeight: null });
+    this.setState({ children });
   }
 
   // adds the trimmed content to state and fills the sizer on resize events
   handleResize() {
+    // if we don't have refs, let it come around again
+    if (!this.refs.spreader) { return; }
+
     const availableWidth = ReactDOM.findDOMNode(this.refs.spreader).offsetWidth;
     this._targetHeight = ReactDOM.findDOMNode(this.refs.sizer).offsetHeight;
 
