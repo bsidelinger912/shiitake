@@ -4,6 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
@@ -30,10 +32,14 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
 var sizerWrapperStyles = {
-  position: 'absolute',
-  left: '-100000px',
-  top: '200px',
+  position: 'relative',
+  top: '20000px',
   width: '100%'
+};
+
+var wrapperStyles = {
+  position: 'relative',
+  overflow: 'hidden'
 };
 
 var _class = function (_ResizeCore) {
@@ -148,14 +154,6 @@ var _class = function (_ResizeCore) {
       var testChildren = _state.testChildren;
 
 
-      var wrapperStyles = { position: 'relative' };
-
-      // the idea here is to fix the height while were adding/removing from the test container
-      if (fixHeight) {
-        wrapperStyles.maxHeight = fixHeight + 'px';
-        wrapperStyles.overflow = 'hidden';
-      }
-
       var vertSpacers = [];
       for (var i = 0; i < this.props.lines; i++) {
         vertSpacers.push(_react2.default.createElement(
@@ -170,7 +168,12 @@ var _class = function (_ResizeCore) {
         { className: this.props.className || '' },
         _react2.default.createElement(
           'div',
-          { style: wrapperStyles },
+          { style: _extends({}, wrapperStyles, { maxHeight: (fixHeight || 0) + 'px' }) },
+          _react2.default.createElement(
+            'div',
+            { ref: 'content', style: { width: '100%' } },
+            children
+          ),
           _react2.default.createElement(
             'div',
             { style: sizerWrapperStyles },
@@ -184,11 +187,6 @@ var _class = function (_ResizeCore) {
               { ref: 'testChildren' },
               testChildren
             )
-          ),
-          _react2.default.createElement(
-            'div',
-            { ref: 'content', style: { width: '100%' } },
-            children
           )
         )
       );
