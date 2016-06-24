@@ -7,6 +7,10 @@ export class App extends React.Component {
   render() {
     const text = 'Cook it up all night with Shitakes';
 
+    function click() {
+      console.log('click');
+    }
+
     return (
       <div className="wrapper">
         <h1>Shiitake Demo</h1>
@@ -24,7 +28,7 @@ export class App extends React.Component {
           </Shiitake>
           >
         </div>
-        <Shiitake tagName="p" lines={1} throttleRate={200} className="shiitake-paragraph">
+        <Shiitake tagName="p" lines={1} throttleRate={200} className="shiitake-paragraph" onClick={click}>
           {text}
         </Shiitake>
         <p className="read-more">

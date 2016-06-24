@@ -7,7 +7,15 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 
 import ResizeCore from './ResizeCore';
-import { wrapperStyles, childrenStyles, block, spreaderStyles, sizerWrapperStyles, setTag } from './constants';
+import {
+  wrapperStyles,
+  childrenStyles,
+  block,
+  spreaderStyles,
+  sizerWrapperStyles,
+  setTag,
+  passProps,
+} from './constants';
 
 export default class extends ResizeCore {
   state = {
@@ -102,7 +110,7 @@ export default class extends ResizeCore {
     }
 
     return (
-      <tagNames.main className={this.props.className || ''}>
+      <tagNames.main className={this.props.className || ''} {...passProps(this.props)}>
         <span style={{ ...wrapperStyles, maxHeight: `${fixHeight || 0}px` }}>
           <span style={childrenStyles}>{children}</span>
 

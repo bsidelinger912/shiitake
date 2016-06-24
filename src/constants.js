@@ -49,3 +49,36 @@ export function setTag(tagName) {
   const foundTag = tagWhitelist.find(tag => tagName === tag);
   return foundTag || 'div';
 }
+
+const eventWhitelist = [
+  'onClick',
+  'onContextMenu',
+  'onDoubleClick',
+  'onDrag onDragEnd',
+  'onDragEnter',
+  'onDragExit',
+  'onDragLeave',
+  'onDragOver',
+  'onDragStart',
+  'onDrop',
+  'onMouseDown',
+  'onMouseEnter',
+  'onMouseLeave',
+  'onMouseMove',
+  'onMouseOut',
+  'onMouseOver',
+  'onMouseUp',
+];
+
+export function passProps(props) {
+  return (Object.keys(props) || {}).reduce((passed, key) => {
+    const hasEvent = eventWhitelist.find(event => event === key);
+    const passedCopy = { ...passed };
+
+    if (hasEvent) {
+      passedCopy[key] = props[key];
+    }
+
+    return passedCopy;
+  }, {});
+}
