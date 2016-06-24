@@ -66,3 +66,26 @@ export class App extends React.Component {
     </tr>
   </tbody>
 </table>
+<br />
+
+### Events  
+Event handlers for mouse events such as onClick can be passed through as props and will given to the returned outer element. Below is a list of events that are currently passed along.  We can add more easily as use cases arise. For more information about events in React, and a comprehensive list, see this [page](https://facebook.github.io/react/docs/events.html#supported-events)
+
+### Supported events (feel free to ask for more):
+* onClick
+* onContextMenu
+* onDoubleClick
+* onDrag onDragEnd
+* onDragEnter
+* onDragExit
+* onDragLeave
+* onDragOver
+* onDragStart
+* onDrop
+* onMouseDown
+* onMouseEnter
+* onMouseLeave
+* onMouseMove
+* onMouseOut
+* onMouseOver
+* onMouseUp
