@@ -7,6 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 exports.setTag = setTag;
+exports.passProps = passProps;
 /**
  * @file style constants and static functions
  */
@@ -45,4 +46,21 @@ function setTag(tagName) {
     return tagName === tag;
   });
   return foundTag || 'div';
+}
+
+var eventWhitelist = ['onClick', 'onContextMenu', 'onDoubleClick', 'onDrag onDragEnd', 'onDragEnter', 'onDragExit', 'onDragLeave', 'onDragOver', 'onDragStart', 'onDrop', 'onMouseDown', 'onMouseEnter', 'onMouseLeave', 'onMouseMove', 'onMouseOut', 'onMouseOver', 'onMouseUp'];
+
+function passProps(props) {
+  return (Object.keys(props) || {}).reduce(function (passed, key) {
+    var hasEvent = eventWhitelist.find(function (event) {
+      return event === key;
+    });
+    var passedCopy = _extends({}, passed);
+
+    if (hasEvent) {
+      passedCopy[key] = props[key];
+    }
+
+    return passedCopy;
+  }, {});
 }

@@ -161,7 +161,7 @@ var _class = function (_ResizeCore) {
 
       return _react2.default.createElement(
         tagNames.main,
-        { className: this.props.className || '' },
+        _extends({ className: this.props.className || '' }, (0, _constants.passProps)(this.props)),
         _react2.default.createElement(
           'span',
           { style: _extends({}, _constants.wrapperStyles, { maxHeight: (fixHeight || 0) + 'px' }) },
