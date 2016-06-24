@@ -2,7 +2,7 @@
 
 ## Line clamp that won't get you fired.
 
-My boss once worked on an app that had a Javascript line clamp that truncated words.  Then one day the term "Cooking with Shiitake" made it into the UI and you can imagine how it got trimmed.  Trimming words is dangerous, don't risk it.  We've build a react component that handles this for you both responsively and responsibly.
+My boss once worked on an app that had a Javascript line clamp that truncated words.  Then one day the term "Cooking with Shiitake" made it into the UI and you can imagine how it got trimmed.  Trimming words is dangerous, don't risk it.  We've built a react component that handles this for you both responsively and responsibly.
 
 ### Download with NPM:
 
@@ -33,6 +33,15 @@ export class App extends React.Component {
 ```
 <br />
 
+### Demo:
+
+```
+$ git clone https://github.com/bsidelinger912/shiitake.git
+$ cd shiitake/demo/
+$ npm install && npm start
+```
+<br />
+
 ### Props:
 
 <table style="width: 100%;">
@@ -50,7 +59,7 @@ export class App extends React.Component {
       <td>required - the number of lines to clamp to</td>
     </tr>
     <tr>
-      <td>trottleRate</td>
+      <td>throttleRate</td>
       <td>Integer</td>
       <td>optional - defaults to 200, the number of milliseconds to throttle resize events to</td>
     </tr>
