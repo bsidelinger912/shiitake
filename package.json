@@ -8,7 +8,8 @@
     "bundle": "NODE_ENV=production node_modules/webpack/bin/webpack.js -p --colors --display-error-details --config webpack.dist.js",
     "clean": "rm -rf dist && mkdir dist",
     "transpile": "babel src --out-dir dist",
-    "dev": "node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack.config.js --hot --inline --content-base demo"
+    "dev": "node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack.config.js --hot --inline --content-base demo",
+    "lint": "node node_modules/eslint/bin/eslint.js --ignore-pattern 'node_modules/' 'src/**/*.js' 'src/**/*.jsx' 'demo/**/*.js' 'demo/**/*.jsx' "
   },
   "repository": {
     "type": "git",
