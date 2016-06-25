@@ -13,7 +13,7 @@ $ npm install --save shiitake
 
 ### Then you can use it like this:
 
-```
+```js
 import Shiitake from 'shiitake';
 
 export class App extends React.Component {
