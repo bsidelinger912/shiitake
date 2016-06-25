@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Shiitake from '../src/index.jsx';
+import Shiitake from 'shiitake';
+
+import './index.css';
 
 export class App extends React.Component {
   render() {
