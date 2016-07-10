@@ -4,11 +4,11 @@ module.exports = {
   entry: [
     'webpack-dev-server/client?http://0.0.0.0:8080',
     'webpack/hot/dev-server',
-    './demo/index.jsx',
+    './dev/index.jsx',
   ],
   devtool: 'source-map',
   output: {
-    path: path.join(__dirname, 'demo'),
+    path: path.join(__dirname, 'dev'),
     filename: 'bundle.js',
   },
   resolve: {
@@ -21,10 +21,15 @@ module.exports = {
         exclude: /node_modules/,
         loader: 'babel',
       },
+      {
+        test: /\.css$/,
+        include: __dirname,
+        loaders: ['style-loader', 'css-loader'],
+      },
     ],
   },
   devServer: {
-    contentBase: './demo',
+    contentBase: './dev',
     noInfo: true, //  --no-info option
     hot: true,
     inline: true,
