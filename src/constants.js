@@ -13,8 +13,7 @@ export const sizerWrapperStyles = {
 
 export const spreaderStyles = {
   ...block,
-  position: 'relative',
-  left: '-20000px',
+  height: '0px',
   width: '100%',
 };
 

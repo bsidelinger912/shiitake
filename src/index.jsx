@@ -19,7 +19,7 @@ import {
 
 export default class extends ResizeCore {
   state = {
-    lastCalculatedWidth: 0,
+    lastCalculatedWidth: -1,
     children: '',
     testChildren: '',
   }
@@ -30,40 +30,58 @@ export default class extends ResizeCore {
     children: PropTypes.string.isRequired,
   }
 
+  componentWillMount() {
+    this.setState({ lastCalculatedWidth: -1 });
+  }
+
   _callDeffered(func) {
     setTimeout(() => {
       if (Object.keys(this.refs).length > 0) { func.bind(this)(); }
     }, 0);
   }
 
-  _checkHeight(adjustDown) {
+  _checkHeight(start, end) {
     const contentHeight = ReactDOM.findDOMNode(this.refs.testChildren).offsetHeight;
-    return (adjustDown) ? (contentHeight <= this._targetHeight) : (contentHeight > this._targetHeight);
-  }
+    const halfWay = end - Math.round((end - start) / 2);
 
-  // this function will add everything then remove one at a time until the desired height is obtained
-  _adjustDown() {
-    if (this.state.testChildren === '') {
-      this.setState({ testChildren: this.props.children });
-      this._callDeffered(this._adjustDown);
-    } else if (this._checkHeight(true)) {
+    // TODO: refine this flag, make simpler
+    const linear = (end - start < 6
+      || (end === this.state.testChildren.length && end !== this.props.children.length)
+      || this.state.lastCalculatedWidth > -1);
+
+    // do we need to trim?
+    if (contentHeight > this._targetHeight) {
+      // chunk/ trim down
+      if (linear) {
+        this._setTestChildren(this.state.testChildren.length, this.state.testChildren.length - 1);
+      } else {
+        this._setTestChildren(start, halfWay);
+      }
+
+    // we've used all the characters in a window expand situation
+    } else if (this.state.testChildren.length === this.props.children.length) {
       this._setChildren();
+    } else if (linear) {
+      // if we just got here by decrementing one, we're good
+      if (start > end) {
+        this._setChildren();
+      } else {
+        // window grew, increment up one
+        this._setTestChildren(this.state.testChildren.length, this.state.testChildren.length + 1);
+      }
     } else {
-      this.setState({ testChildren: this.state.testChildren.slice(0, -1) });
-      this._callDeffered(this._adjustDown);
+      // chunk up, still in binary search mode
+      this._setTestChildren(halfWay, end);
     }
   }
 
-  _adjustUp() {
-    // have we used all our characters?
-    if (this._checkHeight(false)) {
-      this._callDeffered(this._adjustDown);
-    } else if (this.state.testChildren.length !== this.props.children.length) {
-      this.setState({ testChildren: this.props.children.substring(0, this.state.testChildren.length + 1) });
-      this._callDeffered(this._adjustUp);
-    } else {
-      this._setChildren();
-    }
+  // this will render test children trimmed at halfway point then come around to test height again
+  _setTestChildren(start, end) {
+    // if it's within the treshold or has already been calculated, go linear
+    const trimEnd = (end - start < 6 || this.state.lastCalculatedWidth > -1) ? end : end - Math.round((end - start) / 2);
+
+    this.setState({ testChildren: this.props.children.substring(0, trimEnd) });
+    this._callDeffered(this._checkHeight.bind(this, start, end));
   }
 
   _setChildren() {
@@ -75,7 +93,7 @@ export default class extends ResizeCore {
       children = `${children.join(' ')}...`;
     }
 
-    this.setState({ children });
+    this.setState({ children, lastCalculatedWidth: ReactDOM.findDOMNode(this.refs.spreader).offsetWidth });
   }
 
   // adds the trimmed content to state and fills the sizer on resize events
@@ -87,15 +105,26 @@ export default class extends ResizeCore {
     this._targetHeight = ReactDOM.findDOMNode(this.refs.sizer).offsetHeight;
 
     // set the max height right away, so that the resize throttle doesn't allow line break jumps
-    this.setState({ fixHeight: this._targetHeight });
+    // also populate with the full string if we don't have a working trimmed string yet
+    this.setState({ fixHeight: this._targetHeight, children: this.state.children || this.props.children });
 
     // was there a width change?
     if (availableWidth !== this.state.lastCalculatedWidth) {
       // first render?
-      if (this.state.children === '' || availableWidth < this.state.lastCalculatedWidth) {
-        this._adjustDown();
+      if (this.state.testChildren === '') {
+        // give it the full string and check the height
+        this.setState({ testChildren: this.props.children });
+        this._callDeffered(this._checkHeight.bind(this, 0, this.props.children.length));
+
+      // window got smaller?
+      } else if (availableWidth < this.state.lastCalculatedWidth) {
+        // increment down one
+        this._checkHeight(this.state.testChildren.length, this.state.testChildren.length - 1);
+
+      // window got larger?
       } else {
-        this._adjustUp();
+        // increment up one
+        this._checkHeight(this.state.testChildren.length, this.state.testChildren.length + 1);
       }
     }
   }
