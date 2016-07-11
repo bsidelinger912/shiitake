@@ -19,7 +19,7 @@ import {
 
 export default class extends ResizeCore {
   state = {
-    lastCalculatedWidth: 0,
+    lastCalculatedWidth: -1,
     children: '',
     testChildren: '',
   }
@@ -30,6 +30,10 @@ export default class extends ResizeCore {
     children: PropTypes.string.isRequired,
   }
 
+  componentWillMount() {
+    this.setState({ lastCalculatedWidth: -1 });
+  }
+
   _callDeffered(func) {
     setTimeout(() => {
       if (Object.keys(this.refs).length > 0) { func.bind(this)(); }
@@ -37,32 +41,44 @@ export default class extends ResizeCore {
   }
 
   _checkHeight(start, end) {
-    // console.log(`check height called, start: ${start}, end: ${end}`);
     const contentHeight = ReactDOM.findDOMNode(this.refs.testChildren).offsetHeight;
     const halfWay = end - Math.round((end - start) / 2);
 
+    // TODO: refine this flag, make simpler
+    const linear = (end - start < 6
+      || (end === this.state.testChildren.length && end !== this.props.children.length)
+      || this.state.lastCalculatedWidth > -1);
+
     // do we need to trim?
     if (contentHeight > this._targetHeight) {
-      const endIndex = (this._linearDown) ? end - 1 : halfWay;
-      this._setTestChildren(start, endIndex);
-    } else {
-      // did we just get here while coming down one at a time?
-      if (this._linearDown) {
-        // success, we have the exact max characters that'll fit
-        this._linearDown = false;
-        this._setChildren();
-
-      // do we need to add?
-      } else if (this.state.testChildren.length !== this.props.children.length) {
-        this._setTestChildren(halfWay, end);
+      // chunk/ trim down
+      if (linear) {
+        this._setTestChildren(this.state.testChildren.length, this.state.testChildren.length - 1);
+      } else {
+        this._setTestChildren(start, halfWay);
       }
+
+    // we've used all the characters in a window expand situation
+    } else if (this.state.testChildren.length === this.props.children.length) {
+      this._setChildren();
+    } else if (linear) {
+      // if we just got here by decrementing one, we're good
+      if (start > end) {
+        this._setChildren();
+      } else {
+        // window grew, increment up one
+        this._setTestChildren(this.state.testChildren.length, this.state.testChildren.length + 1);
+      }
+    } else {
+      // chunk up, still in binary search mode
+      this._setTestChildren(halfWay, end);
     }
   }
 
-  // this will render test children trimmed at halfway point then come around to test
+  // this will render test children trimmed at halfway point then come around to test height again
   _setTestChildren(start, end) {
-    const trimEnd = (end - start < 6) ? end : end - Math.round((end - start) / 2);
-    this._linearDown = (end - start < 6);
+    // if it's within the treshold or has already been calculated, go linear
+    const trimEnd = (end - start < 6 || this.state.lastCalculatedWidth > -1) ? end : end - Math.round((end - start) / 2);
 
     this.setState({ testChildren: this.props.children.substring(0, trimEnd) });
     this._callDeffered(this._checkHeight.bind(this, start, end));
@@ -96,15 +112,19 @@ export default class extends ResizeCore {
     if (availableWidth !== this.state.lastCalculatedWidth) {
       // first render?
       if (this.state.testChildren === '') {
-        this._setTestChildren(0, this.props.children.length);
+        // give it the full string and check the height
+        this.setState({ testChildren: this.props.children });
+        this._callDeffered(this._checkHeight.bind(this, 0, this.props.children.length));
 
       // window got smaller?
       } else if (availableWidth < this.state.lastCalculatedWidth) {
-        this._setTestChildren(0, this.state.testChildren.length);
+        // increment down one
+        this._checkHeight(this.state.testChildren.length, this.state.testChildren.length - 1);
 
       // window got larger?
       } else {
-        this._setTestChildren(this.state.testChildren.length, this.props.children.length);
+        // increment up one
+        this._checkHeight(this.state.testChildren.length, this.state.testChildren.length + 1);
       }
     }
   }
