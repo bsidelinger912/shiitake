@@ -13,6 +13,7 @@ export const sizerWrapperStyles = {
 
 export const spreaderStyles = {
   ...block,
+  overflow: 'hidden',
   height: '0px',
   width: '100%',
 };

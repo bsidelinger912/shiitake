@@ -34,6 +34,16 @@ export default class extends ResizeCore {
     this.setState({ lastCalculatedWidth: -1 });
   }
 
+  componentWillReceiveProps(newProps) {
+    const { children } = newProps;
+
+    // if we've got different children, retest
+    if (children !== this.props.children) {
+      this.setState({ lastCalculatedWidth: -1 });
+      this._setTestChildren(0, children.length);
+    }
+  }
+
   _callDeffered(func) {
     setTimeout(() => {
       if (Object.keys(this.refs).length > 0) { func.bind(this)(); }
@@ -92,7 +102,7 @@ export default class extends ResizeCore {
       children = this.state.testChildren.slice(0, -3).split(' ').slice(0, -1);
       children = `${children.join(' ')}...`;
     }
-
+    this._handlingResize = false;
     this.setState({ children, lastCalculatedWidth: ReactDOM.findDOMNode(this.refs.spreader).offsetWidth });
   }
 
@@ -109,7 +119,12 @@ export default class extends ResizeCore {
     this.setState({ fixHeight: this._targetHeight, children: this.state.children || this.props.children });
 
     // was there a width change?
-    if (availableWidth !== this.state.lastCalculatedWidth) {
+    if (availableWidth !== this.state.lastCalculatedWidth && !this._handlingResize) {
+
+
+      this._handlingResize = true;//  will this caus problems??????????? will it fix anything???????
+
+
       // first render?
       if (this.state.testChildren === '') {
         // give it the full string and check the height
@@ -119,12 +134,12 @@ export default class extends ResizeCore {
       // window got smaller?
       } else if (availableWidth < this.state.lastCalculatedWidth) {
         // increment down one
-        this._checkHeight(this.state.testChildren.length, this.state.testChildren.length - 1);
+        this._callDeffered(this._checkHeight.bind(this, this.state.testChildren.length, this.state.testChildren.length - 1));
 
       // window got larger?
       } else {
         // increment up one
-        this._checkHeight(this.state.testChildren.length, this.state.testChildren.length + 1);
+        this._callDeffered(this._checkHeight.bind(this, this.state.testChildren.length, this.state.testChildren.length + 1));
       }
     }
   }
