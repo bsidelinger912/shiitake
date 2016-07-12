@@ -4,6 +4,9 @@
 
 My boss once worked on an app that had a Javascript line clamp that truncated words.  Then one day the term "Cooking with Shiitake" made it into the UI and you can imagine how it got trimmed.  Trimming words is dangerous, don't risk it.  We've built a react component that handles this for you both responsively and responsibly.
 
+### Note:
+If you have long strings and dynamically updating content and are using a version less than 1.0.2, you may have noticed some issues.  Those have been resolved in 1.0.2, so please upgrade if your using an older version.
+
 ### Download with NPM:
 
 ```
