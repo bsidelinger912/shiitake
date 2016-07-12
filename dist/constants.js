@@ -21,8 +21,8 @@ var sizerWrapperStyles = exports.sizerWrapperStyles = _extends({}, block, {
 });
 
 var spreaderStyles = exports.spreaderStyles = _extends({}, block, {
-  position: 'relative',
-  left: '-20000px',
+  overflow: 'hidden',
+  height: '0px',
   width: '100%'
 });
 
