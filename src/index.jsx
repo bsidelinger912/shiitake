@@ -119,11 +119,9 @@ class Shiitake extends ResizeCore {
     this.setState({ fixHeight: this._targetHeight, children: this.state.children || this.props.children });
 
     // was there a width change?
+    console.log(`already handling resize: ${this._handlingResize}`);
     if (availableWidth !== this.state.lastCalculatedWidth && !this._handlingResize) {
-
-
-      this._handlingResize = true;//  will this caus problems??????????? will it fix anything???????
-
+      this._handlingResize = true;
 
       // first render?
       if (this.state.testChildren === '') {

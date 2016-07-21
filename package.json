@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "npm run clean && npm run transpile && npm run bundle",
-    "bundle": "NODE_ENV=production node_modules/webpack/bin/webpack.js -p --colors --display-error-details --config webpack.dist.js",
+    "bundle": "node node_modules/webpack/bin/webpack.js -p --colors --display-error-details --config webpack.dist.config.js",
+    "build-dev": "node node_modules/webpack/bin/webpack.js --colors --display-error-details --config webpack.dev.config.js",
     "clean": "rm -rf dist && mkdir dist",
     "transpile": "babel src --out-dir dist",
     "dev": "node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack.config.js --hot --inline --content-base dev",
@@ -40,6 +41,7 @@
     "eslint-plugin-import": "*",
     "eslint-plugin-jsx-a11y": "*",
     "eslint-plugin-react": "*",
+    "express": "^4.14.0",
     "file-loader": "*",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
