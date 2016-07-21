@@ -33,28 +33,28 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * @description React line clamp that won't get you fired
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
-var _class = function (_ResizeCore) {
-  _inherits(_class, _ResizeCore);
+var Shiitake = function (_ResizeCore) {
+  _inherits(Shiitake, _ResizeCore);
 
-  function _class() {
+  function Shiitake() {
     var _Object$getPrototypeO;
 
     var _temp, _this, _ret;
 
-    _classCallCheck(this, _class);
+    _classCallCheck(this, Shiitake);
 
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(_class)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(Shiitake)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {
       lastCalculatedWidth: -1,
       children: '',
       testChildren: ''
     }, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
-  _createClass(_class, [{
+  _createClass(Shiitake, [{
     key: 'componentWillMount',
     value: function componentWillMount() {
       this.setState({ lastCalculatedWidth: -1 });
@@ -236,12 +236,17 @@ var _class = function (_ResizeCore) {
     }
   }]);
 
-  return _class;
+  return Shiitake;
 }(_ResizeCore3.default);
 
-_class.propTypes = {
+// in case someone acidentally passes something undefined in as children
+
+
+Shiitake.propTypes = {
   lines: _react.PropTypes.number.isRequired,
   className: _react.PropTypes.string,
   children: _react.PropTypes.string.isRequired
 };
-exports.default = _class;
+Shiitake.defaultProps = { children: '' };
+
+exports.default = Shiitake;

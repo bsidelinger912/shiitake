@@ -17,7 +17,7 @@ import {
   passProps,
 } from './constants';
 
-export default class extends ResizeCore {
+class Shiitake extends ResizeCore {
   state = {
     lastCalculatedWidth: -1,
     children: '',
@@ -169,3 +169,8 @@ export default class extends ResizeCore {
     );
   }
 }
+
+// in case someone acidentally passes something undefined in as children
+Shiitake.defaultProps = { children: '' };
+
+export default Shiitake;

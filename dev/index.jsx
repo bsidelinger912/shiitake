@@ -33,6 +33,9 @@ export class App extends React.Component {
   render() {
     const text = 'Cook it up all night with Shitakes';
 
+    // used to verify that passing undefined is safe
+    let nullText;
+
     return (
       <div className="wrapper">
         <h1>Shiitake Demo</h1>
@@ -52,6 +55,9 @@ export class App extends React.Component {
         </div>
         <Shiitake tagName="p" lines={1} throttleRate={200} className="shiitake-paragraph" onClick={this.click}>
           {this.state.ipsum}
+        </Shiitake>
+        <Shiitake lines={1}>
+          {nullText}
         </Shiitake>
         <p className="read-more">
           read more <a href="https://github.com/bsidelinger912/shiitake#readme">here</a>.
