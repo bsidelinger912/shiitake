@@ -26,6 +26,8 @@ class ResizeCore extends React.Component {
         this.throttleRate = this.props.throttleRate;
       }
 
+      // We need to bind again when passing to the window listner in for IE10
+      this._handleResize = this._handleResize.bind(this);
       window.addEventListener('resize', this._handleResize);
     }
   }
@@ -37,7 +39,7 @@ class ResizeCore extends React.Component {
   }
 
   _handleResize() {
-    if (!this._resizeTimer) {
+    if (!this._resizeTimer && typeof this.handleResize === 'function') {
       this.handleResize();
 
       // throttle the listener
