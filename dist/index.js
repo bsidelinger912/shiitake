@@ -161,8 +161,7 @@ var Shiitake = function (_ResizeCore) {
 
       // was there a width change?
       if (availableWidth !== this.state.lastCalculatedWidth && !this._handlingResize) {
-
-        this._handlingResize = true; //  will this caus problems??????????? will it fix anything???????
+        this._handlingResize = true;
 
         // first render?
         if (this.state.testChildren === '') {
