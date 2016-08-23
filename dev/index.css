@@ -20,10 +20,6 @@
   display: flex;
 }
 
-/* .shiitake-inline {
-  display: inline-block;
-}*/
-
 .shiitake-paragraph {
   margin: 0 0 50px;
   width: 25%;
@@ -34,4 +30,22 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.show-hide-example {
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.show-hide-content {
+  position: absolute;
+  /* using negative top like this preserves with width so the spacers can compute accurately */
+  top: -20000px;
+  box-sizing: inherit;
+}
+
+.show-hide-example:hover .show-hide-content {
+  position: relative;
+  top: 0;
 }

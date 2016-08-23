@@ -39,6 +39,11 @@ export class App extends React.Component {
     return (
       <div className="wrapper">
         <h1>Shiitake Demo</h1>
+        <p>
+          Here are some examples of Shiitake in the wild.
+        </p>
+
+        <h2>Compare with webkit line-clamp</h2>
         <div className="side-by-side">
           <Shiitake lines={2} throttleRate={200} className="shiitake">
             {text}
@@ -47,18 +52,35 @@ export class App extends React.Component {
             {text}
           </div>
         </div>
+
+        <h2>Create inline style with flexbox:</h2>
         <div className="shiitake-inline-wrapper">
           <Shiitake lines={1} throttleRate={200} className="shiitake-inline">
             {text}
           </Shiitake>
           >
         </div>
+
+        <h2>Specify your own tag name:</h2>
         <Shiitake tagName="p" lines={1} throttleRate={200} className="shiitake-paragraph" onClick={this.click}>
           {this.state.ipsum}
         </Shiitake>
+
+        <h2>Can handle undefined children</h2>
         <Shiitake lines={1}>
           {nullText}
         </Shiitake>
+
+        <h2>Example of showing/hiding</h2>
+        <div className="show-hide-example">
+          <h4>Hover here</h4>
+          <div className="show-hide-content">
+            <Shiitake lines={2}>
+              {ipsum}
+            </Shiitake>
+          </div>
+        </div>
+
         <p className="read-more">
           read more <a href="https://github.com/bsidelinger912/shiitake#readme">here</a>.
         </p>
