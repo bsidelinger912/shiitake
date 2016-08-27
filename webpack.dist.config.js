@@ -9,6 +9,14 @@ config.entry = {
 config.output = {
   path: path.join(__dirname, 'dist'),
   filename: '[name].min.js',
+  library: 'Shiitake',
+  libraryTarget: 'umd',
+};
+
+config.externals = {
+  // Use external version of React
+  react: 'React',
+  'react-dom': 'ReactDOM',
 };
 
 delete config.devServer;

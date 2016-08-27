@@ -1,17 +1,20 @@
 /* eslint-disable strict */
 'use strict';
 
-const Express = require('express');
+const React = require('react');
+const ReactDOMServer = require('react-dom/server');
+const Shiitake = require('../src').default;
 
-const app = new Express();
-const port = 3000;
-
-app.use('/', Express.static(__dirname));
-
-app.listen(port, (error) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.info('==> 🌎  Listening on port %s. Open up http://localhost:%s/ in your browser.', port, port);
+class App extends React.Component {
+  render() {
+    return (
+      <div>
+        <Shiitake lines={2} tagName="p">Hello</Shiitake>
+      </div>
+    );
   }
-});
+}
+
+const string = ReactDOMServer.renderToString(<App />);
+
+console.log(string);

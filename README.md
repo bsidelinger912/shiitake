@@ -40,6 +40,11 @@ $ git clone https://github.com/bsidelinger912/shiitake.git
 $ cd shiitake/demo/
 $ npm install && npm start
 ```
+
+<br />
+
+**CodePen demo**: [http://codepen.io/bsidelinger912/pen/zBgwmd](http://codepen.io/bsidelinger912/pen/zBgwmd)
+
 <br />
 
 ### Props:

@@ -12,7 +12,8 @@
     "dev": "node node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack.config.js --hot --inline --content-base dev",
     "lint": "node node_modules/eslint/bin/eslint.js --ignore-pattern 'node_modules/' 'src/**/*.js' 'src/**/*.jsx' 'demo/**/*.js' 'demo/**/*.jsx' ",
     "test": "node node_modules/karma/bin/karma start karma.conf.js",
-    "test-manual": "node node_modules/karma/bin/karma start karma.manual.conf.js"
+    "test-manual": "node node_modules/karma/bin/karma start karma.manual.conf.js",
+    "test-server": "mocha \"server-test/*.js\" --compilers js:babel-core/register"
   },
   "repository": {
     "type": "git",
@@ -28,6 +29,7 @@
     "url": "https://github.com/bsidelinger912/shiitake/issues"
   },
   "homepage": "https://github.com/bsidelinger912/shiitake#readme",
+  "tonicExampleFilename": "tonicExample.js",
   "dependencies": {},
   "devDependencies": {
     "babel-cli": "^6.10.1",
