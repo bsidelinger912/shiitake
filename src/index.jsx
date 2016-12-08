@@ -37,9 +37,9 @@ class Shiitake extends ResizeCore {
   componentWillReceiveProps(newProps) {
     const { children } = newProps;
 
-    // if we've got different children, retest
+    // if we've got different children, reset and retest
     if (children !== this.props.children) {
-      this.setState({ lastCalculatedWidth: -1 });
+      this.setState({ lastCalculatedWidth: -1, children });
       this._setTestChildren(0, children.length);
     }
   }

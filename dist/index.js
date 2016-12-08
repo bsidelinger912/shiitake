@@ -64,10 +64,10 @@ var Shiitake = function (_ResizeCore) {
     value: function componentWillReceiveProps(newProps) {
       var children = newProps.children;
 
-      // if we've got different children, retest
+      // if we've got different children, reset and retest
 
       if (children !== this.props.children) {
-        this.setState({ lastCalculatedWidth: -1 });
+        this.setState({ lastCalculatedWidth: -1, children: children });
         this._setTestChildren(0, children.length);
       }
     }
