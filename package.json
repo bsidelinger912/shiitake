@@ -1,6 +1,6 @@
 {
   "name": "shiitake",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "Shiitake - line clamp that won't get you fired",
   "main": "dist/index.js",
   "scripts": {
