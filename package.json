@@ -15,6 +15,10 @@
     "test-manual": "node node_modules/karma/bin/karma start karma.manual.conf.js",
     "test-server": "mocha \"server-test/*.js\" --compilers js:babel-core/register"
   },
+  "files": [
+    "dist",
+    "demo"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/bsidelinger912/shiitake"
