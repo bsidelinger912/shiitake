@@ -28,10 +28,12 @@ class Shiitake extends ResizeCore {
     lines: PropTypes.number.isRequired,
     className: PropTypes.string,
     children: PropTypes.string.isRequired,
+    renderFullOnServer: PropTypes.bool,
   }
 
   componentWillMount() {
-    this.setState({ lastCalculatedWidth: -1 });
+    const children = (this.props.renderFullOnServer) ? this.props.children : '';
+    this.setState({ lastCalculatedWidth: -1, children });
   }
 
   componentWillReceiveProps(newProps) {
@@ -142,6 +144,7 @@ class Shiitake extends ResizeCore {
   }
 
   render() {
+    const { renderFullOnServer, className } = this.props;
     const { fixHeight, children, testChildren } = this.state;
     const tagNames = { main: setTag(this.props.tagName) };
 
@@ -150,9 +153,12 @@ class Shiitake extends ResizeCore {
       vertSpacers.push(<span style={block} key={i}>W</span>);
     }
 
+    const thisHeight = (fixHeight || 0) + 'px';
+    const maxHeight = (renderFullOnServer) ? '' : thisHeight;
+
     return (
-      <tagNames.main className={this.props.className || ''} {...passProps(this.props)}>
-        <span style={{ ...wrapperStyles, maxHeight: `${fixHeight || 0}px` }}>
+      <tagNames.main className={className || ''} {...passProps(this.props)}>
+        <span style={{ ...wrapperStyles, maxHeight }}>
           <span style={childrenStyles}>{children}</span>
 
           <span ref="spreader" style={spreaderStyles}>{this.props.children}</span>

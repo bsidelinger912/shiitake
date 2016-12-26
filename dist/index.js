@@ -57,7 +57,8 @@ var Shiitake = function (_ResizeCore) {
   _createClass(Shiitake, [{
     key: 'componentWillMount',
     value: function componentWillMount() {
-      this.setState({ lastCalculatedWidth: -1 });
+      var children = this.props.renderFullOnServer ? this.props.children : '';
+      this.setState({ lastCalculatedWidth: -1, children: children });
     }
   }, {
     key: 'componentWillReceiveProps',
@@ -184,6 +185,9 @@ var Shiitake = function (_ResizeCore) {
   }, {
     key: 'render',
     value: function render() {
+      var _props = this.props;
+      var renderFullOnServer = _props.renderFullOnServer;
+      var className = _props.className;
       var _state = this.state;
       var fixHeight = _state.fixHeight;
       var children = _state.children;
@@ -200,12 +204,15 @@ var Shiitake = function (_ResizeCore) {
         ));
       }
 
+      var thisHeight = (fixHeight || 0) + 'px';
+      var maxHeight = renderFullOnServer ? '' : thisHeight;
+
       return _react2.default.createElement(
         tagNames.main,
-        _extends({ className: this.props.className || '' }, (0, _constants.passProps)(this.props)),
+        _extends({ className: className || '' }, (0, _constants.passProps)(this.props)),
         _react2.default.createElement(
           'span',
-          { style: _extends({}, _constants.wrapperStyles, { maxHeight: (fixHeight || 0) + 'px' }) },
+          { style: _extends({}, _constants.wrapperStyles, { maxHeight: maxHeight }) },
           _react2.default.createElement(
             'span',
             { style: _constants.childrenStyles },
@@ -244,7 +251,8 @@ var Shiitake = function (_ResizeCore) {
 Shiitake.propTypes = {
   lines: _react.PropTypes.number.isRequired,
   className: _react.PropTypes.string,
-  children: _react.PropTypes.string.isRequired
+  children: _react.PropTypes.string.isRequired,
+  renderFullOnServer: _react.PropTypes.bool
 };
 Shiitake.defaultProps = { children: '' };
 
