@@ -28,4 +28,20 @@ describe('Shiitake', () => {
     const el = shallow(<Shiitake lines={1} tagName="p">Hello world</Shiitake>);
     expect(el.find('p').length).toEqual(1);
   });
+
+  it('should recalculate when children or lines change', (done) => {
+    const el = mount(<Shiitake lines={1}>Hello world</Shiitake>);
+    const el2 = mount(<Shiitake lines={1}>Hello world</Shiitake>);
+
+    setTimeout(() => {
+      console.log(el.state());
+      // el.setProps({ lines: 2 });
+      // expect(el.state().lastCalculatedWidth).toEqual(-1);
+
+      /* el2.setProps({ children: 'hello' });
+      expect(el2.state().lastCalculatedWidth).toEqual(-1);**/
+
+      done();
+    }, 500);
+  });
 });

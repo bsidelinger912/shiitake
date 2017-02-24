@@ -6,7 +6,8 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 
-import ResizeCore from './ResizeCore';
+import ResizeListener from './ResizeListener';
+
 import {
   wrapperStyles,
   childrenStyles,
@@ -17,32 +18,38 @@ import {
   passProps,
 } from './constants';
 
-class Shiitake extends ResizeCore {
-  state = {
-    lastCalculatedWidth: -1,
-    children: '',
-    testChildren: '',
-  }
-
+class Shiitake extends React.Component {
   static propTypes = {
     lines: PropTypes.number.isRequired,
     className: PropTypes.string,
     children: PropTypes.string.isRequired,
     renderFullOnServer: PropTypes.bool,
+    throttleRate: PropTypes.number,
   }
 
-  componentWillMount() {
-    const children = (this.props.renderFullOnServer) ? this.props.children : '';
-    this.setState({ lastCalculatedWidth: -1, children });
+  constructor(props) {
+    super(props);
+
+    const children = (props.renderFullOnServer) ? props.children : '';
+
+    this.state = {
+      lastCalculatedWidth: -1,
+      testChildren: '',
+      children,
+    };
+
+    this.handleResize = this.handleResize.bind(this);
   }
 
   componentWillReceiveProps(newProps) {
-    const { children } = newProps;
+    const { children, lines } = newProps;
 
     // if we've got different children, reset and retest
     if (children !== this.props.children) {
       this.setState({ lastCalculatedWidth: -1, children });
       this._setTestChildren(0, children.length);
+    } else if (lines !== this.props.lines) {
+      // this.handleResize();
     }
   }
 
@@ -111,7 +118,11 @@ class Shiitake extends ResizeCore {
   // adds the trimmed content to state and fills the sizer on resize events
   handleResize() {
     // if we don't have a spreader, let it come around again
-    if (!this.refs.spreader) { return; }
+    if (!this.refs.spreader) {
+      console.log('*******########');
+      console.log(this.refs);
+      return;
+    }
 
     const availableWidth = ReactDOM.findDOMNode(this.refs.spreader).offsetWidth;
     this._targetHeight = ReactDOM.findDOMNode(this.refs.sizer).offsetHeight;
@@ -144,7 +155,7 @@ class Shiitake extends ResizeCore {
   }
 
   render() {
-    const { renderFullOnServer, className } = this.props;
+    const { renderFullOnServer, className, throttleRate } = this.props;
     const { fixHeight, children, testChildren } = this.state;
     const tagNames = { main: setTag(this.props.tagName) };
 
@@ -158,6 +169,8 @@ class Shiitake extends ResizeCore {
 
     return (
       <tagNames.main className={className || ''} {...passProps(this.props)}>
+        <ResizeListener handleResize={this.handleResize} throttleRate={throttleRate} />
+
         <span style={{ ...wrapperStyles, maxHeight }}>
           <span style={childrenStyles}>{children}</span>
 
