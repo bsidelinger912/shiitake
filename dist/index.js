@@ -16,9 +16,9 @@ var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _ResizeCore2 = require('./ResizeCore');
+var _ResizeListener = require('./ResizeListener');
 
-var _ResizeCore3 = _interopRequireDefault(_ResizeCore2);
+var _ResizeListener2 = _interopRequireDefault(_ResizeListener);
 
 var _constants = require('./constants');
 
@@ -33,53 +33,63 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * @description React line clamp that won't get you fired
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
-var Shiitake = function (_ResizeCore) {
-  _inherits(Shiitake, _ResizeCore);
+var Shiitake = function (_React$Component) {
+  _inherits(Shiitake, _React$Component);
 
-  function Shiitake() {
-    var _Object$getPrototypeO;
-
-    var _temp, _this, _ret;
-
+  function Shiitake(props) {
     _classCallCheck(this, Shiitake);
 
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Shiitake).call(this, props));
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(Shiitake)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {
+    var children = props.renderFullOnServer ? props.children : '';
+
+    _this.state = {
       lastCalculatedWidth: -1,
-      children: '',
-      testChildren: ''
-    }, _temp), _possibleConstructorReturn(_this, _ret);
+      testChildren: '',
+      children: children
+    };
+
+    _this.handleResize = _this.handleResize.bind(_this);
+    return _this;
   }
 
+  // in case someone acidentally passes something undefined in as children
+
+
   _createClass(Shiitake, [{
-    key: 'componentWillMount',
-    value: function componentWillMount() {
-      var children = this.props.renderFullOnServer ? this.props.children : '';
-      this.setState({ lastCalculatedWidth: -1, children: children });
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.handleResize();
     }
   }, {
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(newProps) {
+      var _this2 = this;
+
       var children = newProps.children;
+      var lines = newProps.lines;
 
       // if we've got different children, reset and retest
 
       if (children !== this.props.children) {
         this.setState({ lastCalculatedWidth: -1, children: children });
         this._setTestChildren(0, children.length);
+      } else if (lines !== this.props.lines) {
+        // for a lines number change, retrim the full string
+        this._callDeffered(function () {
+          _this2.setState({ testChildren: '', lastCalculatedWidth: -1, children: _this2.props.children });
+          _this2.handleResize();
+        });
       }
     }
   }, {
     key: '_callDeffered',
     value: function _callDeffered(func) {
-      var _this2 = this;
+      var _this3 = this;
 
       setTimeout(function () {
-        if (Object.keys(_this2.refs).length > 0) {
-          func.bind(_this2)();
+        if (Object.keys(_this3.refs).length > 0) {
+          func.bind(_this3)();
         }
       }, 0);
     }
@@ -160,7 +170,7 @@ var Shiitake = function (_ResizeCore) {
       // also populate with the full string if we don't have a working trimmed string yet
       this.setState({ fixHeight: this._targetHeight, children: this.state.children || this.props.children });
 
-      // was there a width change?
+      // was there a width change, or lines change?
       if (availableWidth !== this.state.lastCalculatedWidth && !this._handlingResize) {
         this._handlingResize = true;
 
@@ -188,6 +198,7 @@ var Shiitake = function (_ResizeCore) {
       var _props = this.props;
       var renderFullOnServer = _props.renderFullOnServer;
       var className = _props.className;
+      var throttleRate = _props.throttleRate;
       var _state = this.state;
       var fixHeight = _state.fixHeight;
       var children = _state.children;
@@ -210,6 +221,7 @@ var Shiitake = function (_ResizeCore) {
       return _react2.default.createElement(
         tagNames.main,
         _extends({ className: className || '' }, (0, _constants.passProps)(this.props)),
+        _react2.default.createElement(_ResizeListener2.default, { handleResize: this.handleResize, throttleRate: throttleRate }),
         _react2.default.createElement(
           'span',
           { style: _extends({}, _constants.wrapperStyles, { maxHeight: maxHeight }) },
@@ -243,17 +255,14 @@ var Shiitake = function (_ResizeCore) {
   }]);
 
   return Shiitake;
-}(_ResizeCore3.default);
-
-// in case someone acidentally passes something undefined in as children
-
+}(_react2.default.Component);
 
 Shiitake.propTypes = {
   lines: _react.PropTypes.number.isRequired,
   className: _react.PropTypes.string,
   children: _react.PropTypes.string.isRequired,
-  renderFullOnServer: _react.PropTypes.bool
+  renderFullOnServer: _react.PropTypes.bool,
+  throttleRate: _react.PropTypes.number
 };
 Shiitake.defaultProps = { children: '' };
-
 exports.default = Shiitake;

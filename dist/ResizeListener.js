@@ -17,7 +17,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @class ResizeCore
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @class ResizeListener
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * @description extendable component that uses the provided .handleResize() method
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
@@ -25,66 +25,66 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var defaultThrottleRate = 200;
 
-var ResizeCore = function (_React$Component) {
-  _inherits(ResizeCore, _React$Component);
+var ResizeListener = function (_React$Component) {
+  _inherits(ResizeListener, _React$Component);
 
-  function ResizeCore() {
-    _classCallCheck(this, ResizeCore);
+  function ResizeListener() {
+    _classCallCheck(this, ResizeListener);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ResizeCore).call(this));
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ResizeListener).call(this));
 
-    _this.throttleRate = defaultThrottleRate;
     _this._handleResize = _this._handleResize.bind(_this);
     return _this;
   }
 
-  _createClass(ResizeCore, [{
+  _createClass(ResizeListener, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      if (typeof this.handleResize === 'function') {
-        this.handleResize();
-
-        // yes, zero is not allowed
-        if (this.props.throttleRate) {
-          this.throttleRate = this.props.throttleRate;
-        }
-
-        // We need to bind again when passing to the window listner in for IE10
-        this._handleResize = this._handleResize.bind(this);
-        window.addEventListener('resize', this._handleResize);
-      }
+      // We need to bind again when passing to the window listner in for IE10
+      this._handleResize = this._handleResize.bind(this);
+      window.addEventListener('resize', this._handleResize);
     }
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
-      if (typeof this.handleResize === 'function') {
-        window.removeEventListener('resize', this._handleResize);
-      }
+      window.removeEventListener('resize', this._handleResize);
     }
   }, {
     key: '_handleResize',
     value: function _handleResize() {
       var _this2 = this;
 
-      if (!this._resizeTimer && typeof this.handleResize === 'function') {
-        this.handleResize();
+      if (!this._resizeTimer) {
+        this.props.handleResize();
 
         // throttle the listener
         this._resizeTimer = setTimeout(function () {
           // if a resize came in while we paused, adjust again once after the pause before we start listening again
           if (_this2._pendingResize) {
-            _this2.handleResize();
+            _this2.props.handleResize();
           }
 
           _this2._resizeTimer = false;
-        }, this.throttleRate);
+        }, this.props.throttleRate);
       } else {
         this._pendingResize = true;
       }
     }
+  }, {
+    key: 'render',
+    value: function render() {
+      return null;
+    }
   }]);
 
-  return ResizeCore;
+  return ResizeListener;
 }(_react2.default.Component);
 
-exports.default = ResizeCore;
+ResizeListener.propTypes = {
+  handleResize: _react.PropTypes.func.isRequired,
+  throttleRate: _react.PropTypes.number
+};
+ResizeListener.defaultProps = {
+  throttleRate: defaultThrottleRate
+};
+exports.default = ResizeListener;
