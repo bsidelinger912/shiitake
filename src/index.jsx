@@ -27,6 +27,9 @@ class Shiitake extends React.Component {
     throttleRate: PropTypes.number,
   }
 
+  // in case someone acidentally passes something undefined in as children
+  static defaultProps = { children: '' }
+
   constructor(props) {
     super(props);
 
@@ -41,6 +44,10 @@ class Shiitake extends React.Component {
     this.handleResize = this.handleResize.bind(this);
   }
 
+  componentDidMount() {
+    this.handleResize();
+  }
+
   componentWillReceiveProps(newProps) {
     const { children, lines } = newProps;
 
@@ -49,7 +56,11 @@ class Shiitake extends React.Component {
       this.setState({ lastCalculatedWidth: -1, children });
       this._setTestChildren(0, children.length);
     } else if (lines !== this.props.lines) {
-      // this.handleResize();
+      // for a lines number change, retrim the full string
+      this._callDeffered(() => {
+        this.setState({ testChildren: '', lastCalculatedWidth: -1, children: this.props.children });
+        this.handleResize();
+      });
     }
   }
 
@@ -119,8 +130,6 @@ class Shiitake extends React.Component {
   handleResize() {
     // if we don't have a spreader, let it come around again
     if (!this.refs.spreader) {
-      console.log('*******########');
-      console.log(this.refs);
       return;
     }
 
@@ -131,7 +140,7 @@ class Shiitake extends React.Component {
     // also populate with the full string if we don't have a working trimmed string yet
     this.setState({ fixHeight: this._targetHeight, children: this.state.children || this.props.children });
 
-    // was there a width change?
+    // was there a width change, or lines change?
     if (availableWidth !== this.state.lastCalculatedWidth && !this._handlingResize) {
       this._handlingResize = true;
 
@@ -185,8 +194,5 @@ class Shiitake extends React.Component {
     );
   }
 }
-
-// in case someone acidentally passes something undefined in as children
-Shiitake.defaultProps = { children: '' };
 
 export default Shiitake;

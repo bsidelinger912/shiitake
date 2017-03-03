@@ -21,13 +21,18 @@ export class App extends React.Component {
   constructor() {
     super();
 
-    this.state = { ipsum };
+    this.state = { ipsum, dynamicLines: 2 };
 
     this.click = this.click.bind(this);
+    this.toggleDynamicLines = this.toggleDynamicLines.bind(this);
   }
 
   click() {
     this.setState({ ipsum: ipsum2 });
+  }
+
+  toggleDynamicLines() {
+    this.setState({ dynamicLines: (this.state.dynamicLines === 2) ? 1 : 2 });
   }
 
   render() {
@@ -79,6 +84,12 @@ export class App extends React.Component {
               {ipsum}
             </Shiitake>
           </div>
+        </div>
+
+        <h2>Change lines dynamically</h2>
+        <div>
+          <Shiitake lines={this.state.dynamicLines}>{ipsum}</Shiitake>
+          <button onClick={this.toggleDynamicLines}>Change to {(this.state.dynamicLines === 2) ? '1 line' : '2 lines'}</button>
         </div>
 
         <p className="read-more">

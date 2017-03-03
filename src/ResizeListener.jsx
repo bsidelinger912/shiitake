@@ -26,9 +26,6 @@ class ResizeListener extends React.Component {
   }
 
   componentDidMount() {
-    console.log('***********');
-    this.props.handleResize();
-
     // We need to bind again when passing to the window listner in for IE10
     this._handleResize = this._handleResize.bind(this);
     window.addEventListener('resize', this._handleResize);
