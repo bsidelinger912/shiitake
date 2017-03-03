@@ -129,9 +129,7 @@ class Shiitake extends React.Component {
   // adds the trimmed content to state and fills the sizer on resize events
   handleResize() {
     // if we don't have a spreader, let it come around again
-    if (!this.refs.spreader) {
-      return;
-    }
+    if (!this.refs.spreader) { return; }
 
     const availableWidth = ReactDOM.findDOMNode(this.refs.spreader).offsetWidth;
     this._targetHeight = ReactDOM.findDOMNode(this.refs.sizer).offsetHeight;
