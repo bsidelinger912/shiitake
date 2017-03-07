@@ -13,7 +13,8 @@
     "lint": "node node_modules/eslint/bin/eslint.js --ignore-pattern 'node_modules/' 'src/**/*.js' 'src/**/*.jsx' 'demo/**/*.js' 'demo/**/*.jsx' ",
     "test": "node node_modules/karma/bin/karma start karma.conf.js",
     "test-manual": "node node_modules/karma/bin/karma start karma.manual.conf.js",
-    "test-server": "mocha \"server-test/*.js\" --compilers js:babel-core/register"
+    "test-server": "mocha \"server-test/*.js\" --compilers js:babel-core/register",
+    "prepublish": "npm run build"
   },
   "files": [
     "dist",

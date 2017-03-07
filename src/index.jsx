@@ -25,6 +25,7 @@ class Shiitake extends React.Component {
     children: PropTypes.string.isRequired,
     renderFullOnServer: PropTypes.bool,
     throttleRate: PropTypes.number,
+    tagName: PropTypes.string,
   }
 
   // in case someone acidentally passes something undefined in as children

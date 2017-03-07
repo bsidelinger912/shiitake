@@ -78,6 +78,11 @@ $ npm install && npm start
       <td>String</td>
       <td>optional - defaults to 'div', the tag name for the returned outer element</td>
     </tr>
+    <tr>
+      <td>renderFullOnServer</td>
+      <td>Boolean</td>
+      <td>optional - defaults to false, this tells shiitake to render the full string on the server and in the client before it calculates the truncation.  This is useful when you have prominent text that seldom needs to be trimmed.</td>
+    </tr>
   </tbody>
 </table>
 <br />
