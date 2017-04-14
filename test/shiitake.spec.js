@@ -1,11 +1,12 @@
 /* eslint-env node, mocha */
-
-const expect = require('expect');
+/* eslint-disable react/jsx-filename-extension*/
 
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 
 import Shiitake from '../src/index';
+
+const expect = require('expect');
 
 describe('Shiitake', () => {
   it('should render the children', () => {

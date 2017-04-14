@@ -16,10 +16,6 @@ var _propTypes = require('prop-types');
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
 var _ResizeListener = require('./ResizeListener');
 
 var _ResizeListener2 = _interopRequireDefault(_ResizeListener);
@@ -92,7 +88,7 @@ var Shiitake = function (_React$Component) {
       var _this3 = this;
 
       setTimeout(function () {
-        if (Object.keys(_this3.refs).length > 0) {
+        if (_this3.spreader) {
           func.bind(_this3)();
         }
       }, 0);
@@ -100,7 +96,7 @@ var Shiitake = function (_React$Component) {
   }, {
     key: '_checkHeight',
     value: function _checkHeight(start, end) {
-      var contentHeight = _reactDom2.default.findDOMNode(this.refs.testChildren).offsetHeight;
+      var contentHeight = this.testChildren.offsetHeight;
       var halfWay = end - Math.round((end - start) / 2);
 
       // TODO: refine this flag, make simpler
@@ -154,7 +150,7 @@ var Shiitake = function (_React$Component) {
         children = children.join(' ') + '...';
       }
       this._handlingResize = false;
-      this.setState({ children: children, lastCalculatedWidth: _reactDom2.default.findDOMNode(this.refs.spreader).offsetWidth });
+      this.setState({ children: children, lastCalculatedWidth: this.spreader.offsetWidth });
     }
 
     // adds the trimmed content to state and fills the sizer on resize events
@@ -163,12 +159,12 @@ var Shiitake = function (_React$Component) {
     key: 'handleResize',
     value: function handleResize() {
       // if we don't have a spreader, let it come around again
-      if (!this.refs.spreader) {
+      if (!this.spreader) {
         return;
       }
 
-      var availableWidth = _reactDom2.default.findDOMNode(this.refs.spreader).offsetWidth;
-      this._targetHeight = _reactDom2.default.findDOMNode(this.refs.sizer).offsetHeight;
+      var availableWidth = this.spreader.offsetWidth;
+      this._targetHeight = this.sizer.offsetHeight;
 
       // set the max height right away, so that the resize throttle doesn't allow line break jumps
       // also populate with the full string if we don't have a working trimmed string yet
@@ -199,6 +195,8 @@ var Shiitake = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      var _this4 = this;
+
       var _props = this.props,
           renderFullOnServer = _props.renderFullOnServer,
           className = _props.className,
@@ -236,7 +234,9 @@ var Shiitake = function (_React$Component) {
           ),
           _react2.default.createElement(
             'span',
-            { ref: 'spreader', style: _constants.spreaderStyles },
+            { ref: function ref(node) {
+                _this4.spreader = node;
+              }, style: _constants.spreaderStyles },
             this.props.children
           ),
           _react2.default.createElement(
@@ -244,12 +244,16 @@ var Shiitake = function (_React$Component) {
             { style: _constants.sizerWrapperStyles },
             _react2.default.createElement(
               'span',
-              { ref: 'sizer', style: _constants.block },
+              { ref: function ref(node) {
+                  _this4.sizer = node;
+                }, style: _constants.block },
               vertSpacers
             ),
             _react2.default.createElement(
               'span',
-              { ref: 'testChildren', style: _constants.block },
+              { ref: function ref(node) {
+                  _this4.testChildren = node;
+                }, style: _constants.block },
               testChildren
             )
           )
@@ -268,6 +272,12 @@ Shiitake.propTypes = {
   renderFullOnServer: _propTypes2.default.bool,
   throttleRate: _propTypes2.default.number,
   tagName: _propTypes2.default.string
+};
+Shiitake.defaultProps = {
+  className: '',
+  renderFullOnServer: false,
+  throttleRate: undefined,
+  tagName: undefined
 };
 Shiitake.defaultProps = { children: '' };
 exports.default = Shiitake;

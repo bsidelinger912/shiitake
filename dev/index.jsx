@@ -1,7 +1,7 @@
 /* eslint-env browser */
 
 import React from 'react';
-import ReactDOM from 'react-dom'; // eslint-disable-line
+import ReactDOM from 'react-dom';
 
 import Shiitake from '../src';
 

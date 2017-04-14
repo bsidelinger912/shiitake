@@ -76,7 +76,7 @@ if (!Array.prototype.find) {
       throw new TypeError('predicate must be a function');
     }
     var list = Object(this);
-    var length = list.length >>> 0;
+    var length = list.length >>> 0; // eslint-disable-line
     var thisArg = arguments[1];
     var value = void 0;
 

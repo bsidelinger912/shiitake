@@ -1,6 +1,13 @@
 const webpack = require('karma-webpack');
 const webpackConfig = require('./webpack.config');
 
+webpackConfig.externals = {
+  'cheerio': 'window', // eslint-disable-line
+  'react/addons': true,
+  'react/lib/ExecutionEnvironment': true,
+  'react/lib/ReactContext': true,
+};
+
 module.exports = (config) => {
   config.set({
     basePath: '',
@@ -27,7 +34,7 @@ module.exports = (config) => {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      '**/*.js': 'webpack',
+      'test/*.spec.js': ['webpack'],
     },
 
     reporters: ['spec'],

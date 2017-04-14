@@ -25,7 +25,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * @description extendable component that uses the provided .handleResize() method
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
-/* eslint no-underscore-dangle: 0 */
+/* eslint-env browser */
 
 var defaultThrottleRate = 200;
 

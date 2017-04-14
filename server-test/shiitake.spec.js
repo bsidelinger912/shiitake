@@ -1,11 +1,12 @@
 /* eslint-env node, mocha */
-
-const expect = require('expect');
+/* eslint-disable react/jsx-filename-extension*/
 
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 
 import Shiitake from '../src/index';
+
+const expect = require('expect');
 
 describe('Shiitake', () => {
   it('should render all the children on the server', () => {

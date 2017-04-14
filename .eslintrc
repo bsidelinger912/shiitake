@@ -73,6 +73,8 @@
 
         "no-underscore-dangle": [ 0 ],
 
-        "no-plusplus": [ 0 ]
+        "no-plusplus": [ 0 ],
+
+        "import/no-extraneous-dependencies": [ 0 ]
     }
 }
