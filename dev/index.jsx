@@ -1,7 +1,9 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+/* eslint-env browser */
 
-import Shiitake from '../src/index.jsx';
+import React from 'react';
+import ReactDOM from 'react-dom'; // eslint-disable-line
+
+import Shiitake from '../src';
 
 import './index.css';
 
@@ -17,7 +19,7 @@ five centuries, but also the leap into electronic typesetting, remaining essenti
 popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently
 with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.`;
 
-export class App extends React.Component {
+class App extends React.Component {
   constructor() {
     super();
 
@@ -63,7 +65,7 @@ export class App extends React.Component {
           <Shiitake lines={1} throttleRate={200} className="shiitake-inline">
             {text}
           </Shiitake>
-          >
+          &gt;
         </div>
 
         <h2>Specify your own tag name:</h2>
@@ -96,7 +98,7 @@ export class App extends React.Component {
           read more <a href="https://github.com/bsidelinger912/shiitake#readme">here</a>.
         </p>
       </div>
-		);
+    );
   }
 }
 

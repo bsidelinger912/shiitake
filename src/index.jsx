@@ -3,8 +3,8 @@
  * @description React line clamp that won't get you fired
  */
 
-import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 import ResizeListener from './ResizeListener';
 
@@ -26,6 +26,13 @@ class Shiitake extends React.Component {
     renderFullOnServer: PropTypes.bool,
     throttleRate: PropTypes.number,
     tagName: PropTypes.string,
+  }
+
+  static defaultProps = {
+    className: '',
+    renderFullOnServer: false,
+    throttleRate: undefined,
+    tagName: undefined,
   }
 
   // in case someone acidentally passes something undefined in as children
@@ -67,12 +74,12 @@ class Shiitake extends React.Component {
 
   _callDeffered(func) {
     setTimeout(() => {
-      if (Object.keys(this.refs).length > 0) { func.bind(this)(); }
+      if (this.spreader) { func.bind(this)(); }
     }, 0);
   }
 
   _checkHeight(start, end) {
-    const contentHeight = ReactDOM.findDOMNode(this.refs.testChildren).offsetHeight;
+    const contentHeight = this.testChildren.offsetHeight;
     const halfWay = end - Math.round((end - start) / 2);
 
     // TODO: refine this flag, make simpler
@@ -124,16 +131,16 @@ class Shiitake extends React.Component {
       children = `${children.join(' ')}...`;
     }
     this._handlingResize = false;
-    this.setState({ children, lastCalculatedWidth: ReactDOM.findDOMNode(this.refs.spreader).offsetWidth });
+    this.setState({ children, lastCalculatedWidth: this.spreader.offsetWidth });
   }
 
   // adds the trimmed content to state and fills the sizer on resize events
   handleResize() {
     // if we don't have a spreader, let it come around again
-    if (!this.refs.spreader) { return; }
+    if (!this.spreader) { return; }
 
-    const availableWidth = ReactDOM.findDOMNode(this.refs.spreader).offsetWidth;
-    this._targetHeight = ReactDOM.findDOMNode(this.refs.sizer).offsetHeight;
+    const availableWidth = this.spreader.offsetWidth;
+    this._targetHeight = this.sizer.offsetHeight;
 
     // set the max height right away, so that the resize throttle doesn't allow line break jumps
     // also populate with the full string if we don't have a working trimmed string yet
@@ -182,11 +189,11 @@ class Shiitake extends React.Component {
         <span style={{ ...wrapperStyles, maxHeight }}>
           <span style={childrenStyles}>{children}</span>
 
-          <span ref="spreader" style={spreaderStyles}>{this.props.children}</span>
+          <span ref={(node) => { this.spreader = node; }} style={spreaderStyles}>{this.props.children}</span>
 
           <span style={sizerWrapperStyles}>
-            <span ref="sizer" style={block}>{vertSpacers}</span>
-            <span ref="testChildren" style={block}>{testChildren}</span>
+            <span ref={(node) => { this.sizer = node; }} style={block}>{vertSpacers}</span>
+            <span ref={(node) => { this.testChildren = node; }} style={block}>{testChildren}</span>
           </span>
         </span>
       </tagNames.main>

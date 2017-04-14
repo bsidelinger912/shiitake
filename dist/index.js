@@ -12,6 +12,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
 var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
@@ -39,7 +43,7 @@ var Shiitake = function (_React$Component) {
   function Shiitake(props) {
     _classCallCheck(this, Shiitake);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Shiitake).call(this, props));
+    var _this = _possibleConstructorReturn(this, (Shiitake.__proto__ || Object.getPrototypeOf(Shiitake)).call(this, props));
 
     var children = props.renderFullOnServer ? props.children : '';
 
@@ -66,8 +70,8 @@ var Shiitake = function (_React$Component) {
     value: function componentWillReceiveProps(newProps) {
       var _this2 = this;
 
-      var children = newProps.children;
-      var lines = newProps.lines;
+      var children = newProps.children,
+          lines = newProps.lines;
 
       // if we've got different children, reset and retest
 
@@ -195,14 +199,14 @@ var Shiitake = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _props = this.props;
-      var renderFullOnServer = _props.renderFullOnServer;
-      var className = _props.className;
-      var throttleRate = _props.throttleRate;
-      var _state = this.state;
-      var fixHeight = _state.fixHeight;
-      var children = _state.children;
-      var testChildren = _state.testChildren;
+      var _props = this.props,
+          renderFullOnServer = _props.renderFullOnServer,
+          className = _props.className,
+          throttleRate = _props.throttleRate;
+      var _state = this.state,
+          fixHeight = _state.fixHeight,
+          children = _state.children,
+          testChildren = _state.testChildren;
 
       var tagNames = { main: (0, _constants.setTag)(this.props.tagName) };
 
@@ -258,11 +262,12 @@ var Shiitake = function (_React$Component) {
 }(_react2.default.Component);
 
 Shiitake.propTypes = {
-  lines: _react.PropTypes.number.isRequired,
-  className: _react.PropTypes.string,
-  children: _react.PropTypes.string.isRequired,
-  renderFullOnServer: _react.PropTypes.bool,
-  throttleRate: _react.PropTypes.number
+  lines: _propTypes2.default.number.isRequired,
+  className: _propTypes2.default.string,
+  children: _propTypes2.default.string.isRequired,
+  renderFullOnServer: _propTypes2.default.bool,
+  throttleRate: _propTypes2.default.number,
+  tagName: _propTypes2.default.string
 };
 Shiitake.defaultProps = { children: '' };
 exports.default = Shiitake;

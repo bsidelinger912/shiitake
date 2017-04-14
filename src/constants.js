@@ -94,7 +94,7 @@ if (!Array.prototype.find) {
       throw new TypeError('predicate must be a function');
     }
     const list = Object(this);
-    const length = list.length >>> 0;
+    const length = list.length >>> 0; // eslint-disable-line
     const thisArg = arguments[1];
     let value;
 

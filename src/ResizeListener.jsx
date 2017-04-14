@@ -3,9 +3,10 @@
  * @description extendable component that uses the provided .handleResize() method
  */
 
-/* eslint no-underscore-dangle: 0 */
+/* eslint-env browser */
 
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 const defaultThrottleRate = 200;
 
