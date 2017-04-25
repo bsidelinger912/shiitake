@@ -37,8 +37,8 @@ export class App extends React.Component {
 
 ```
 $ git clone https://github.com/bsidelinger912/shiitake.git
-$ cd shiitake/demo/
-$ npm install && npm start
+$ cd shiitake
+$ npm install && npm run dev
 ```
 
 <br />
