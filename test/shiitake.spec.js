@@ -40,7 +40,7 @@ describe('Shiitake', () => {
 
       const spy = expect.spyOn(el.instance(), 'handleResize');
       el.setProps({ lines: 2 });
-      el.setState({ children: 'hello...' });
+      el.setState({ children: 'hello…' });
 
       setTimeout(() => {
         expect(spy).toHaveBeenCalled();
