@@ -83,6 +83,11 @@ $ npm install && npm run dev
       <td>Boolean</td>
       <td>optional - defaults to false, this tells shiitake to render the full string on the server and in the client before it calculates the truncation.  This is useful when you have prominent text that seldom needs to be trimmed.</td>
     </tr>
+    <tr>
+      <td>overflowNode</td>
+      <td>Node</td>
+      <td>optional - defaults to '\u2026' (ellipsis), the text or html that indicates the string has been trimmed</td>
+    </tr>
   </tbody>
 </table>
 <br />
