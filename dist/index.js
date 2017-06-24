@@ -53,9 +53,6 @@ var Shiitake = function (_React$Component) {
     return _this;
   }
 
-  // in case someone acidentally passes something undefined in as children
-
-
   _createClass(Shiitake, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
@@ -146,8 +143,10 @@ var Shiitake = function (_React$Component) {
 
       // are we actually trimming?
       if (this.state.testChildren.length < this.props.children.length) {
-        children = this.state.testChildren.slice(0, -3).split(' ').slice(0, -1);
-        children = children.join(' ') + '...';
+        // @TODO: won't need to trim here soon!!!!
+        // children = this.state.testChildren.slice(0, -3).split(' ').slice(0, -1).join(' ');
+        children = this.state.testChildren.split(' ').slice(0, -1).join(' ');
+        // children = `${children}${this.props.overflowNode}`;
       }
       this._handlingResize = false;
       this.setState({ children: children, lastCalculatedWidth: this.spreader.offsetWidth });
@@ -200,7 +199,8 @@ var Shiitake = function (_React$Component) {
       var _props = this.props,
           renderFullOnServer = _props.renderFullOnServer,
           className = _props.className,
-          throttleRate = _props.throttleRate;
+          throttleRate = _props.throttleRate,
+          overflowNode = _props.overflowNode;
       var _state = this.state,
           fixHeight = _state.fixHeight,
           children = _state.children,
@@ -220,6 +220,8 @@ var Shiitake = function (_React$Component) {
       var thisHeight = (fixHeight || 0) + 'px';
       var maxHeight = renderFullOnServer ? '' : thisHeight;
 
+      var overflow = testChildren.length < this.props.children.length ? overflowNode : null;
+
       return _react2.default.createElement(
         tagNames.main,
         _extends({ className: className || '' }, (0, _constants.passProps)(this.props)),
@@ -230,7 +232,8 @@ var Shiitake = function (_React$Component) {
           _react2.default.createElement(
             'span',
             { style: _constants.childrenStyles },
-            children
+            children,
+            overflow
           ),
           _react2.default.createElement(
             'span',
@@ -254,7 +257,8 @@ var Shiitake = function (_React$Component) {
               { ref: function ref(node) {
                   _this4.testChildren = node;
                 }, style: _constants.block },
-              testChildren
+              testChildren,
+              overflow
             )
           )
         )
@@ -271,13 +275,15 @@ Shiitake.propTypes = {
   children: _propTypes2.default.string.isRequired,
   renderFullOnServer: _propTypes2.default.bool,
   throttleRate: _propTypes2.default.number,
-  tagName: _propTypes2.default.string
+  tagName: _propTypes2.default.string,
+  overflowNode: _propTypes2.default.node
 };
 Shiitake.defaultProps = {
   className: '',
   renderFullOnServer: false,
   throttleRate: undefined,
-  tagName: undefined
+  tagName: undefined,
+  overflowNode: '\u2026',
+  children: ''
 };
-Shiitake.defaultProps = { children: '' };
 exports.default = Shiitake;
