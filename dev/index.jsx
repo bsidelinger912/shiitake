@@ -94,6 +94,16 @@ class App extends React.Component {
           <button onClick={this.toggleDynamicLines}>Change to {(this.state.dynamicLines === 2) ? '1 line' : '2 lines'}</button>
         </div>
 
+        <h2>Custom overflow node</h2>
+        <div>
+          <Shiitake
+            lines={2}
+            overflowNode={<a href="https://github.com/bsidelinger912/shiitake#readme" target="_blank" rel="noopener noreferrer"> ...read more</a>}
+          >
+            {ipsum}
+          </Shiitake>
+        </div>
+
         <p className="read-more">
           read more <a href="https://github.com/bsidelinger912/shiitake#readme">here</a>.
         </p>
