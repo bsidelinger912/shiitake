@@ -127,10 +127,7 @@ class Shiitake extends React.Component {
 
     // are we actually trimming?
     if (this.state.testChildren.length < this.props.children.length) {
-      // @TODO: won't need to trim here soon!!!!
-      // children = this.state.testChildren.slice(0, -3).split(' ').slice(0, -1).join(' ');
       children = this.state.testChildren.split(' ').slice(0, -1).join(' ');
-      // children = `${children}${this.props.overflowNode}`;
     }
     this._handlingResize = false;
     this.setState({ children, lastCalculatedWidth: this.spreader.offsetWidth });

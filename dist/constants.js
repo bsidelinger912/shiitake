@@ -17,7 +17,6 @@ var block = exports.block = { display: 'block' };
 var sizerWrapperStyles = exports.sizerWrapperStyles = _extends({}, block, {
   position: 'absolute',
   left: '-20000px',
-  border: '1px solid black',
   width: '100%'
 });
 

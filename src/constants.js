@@ -8,7 +8,6 @@ export const sizerWrapperStyles = {
   ...block,
   position: 'absolute',
   left: '-20000px',
-  border: '1px solid black',
   width: '100%',
 };
 
