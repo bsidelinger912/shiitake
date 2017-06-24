@@ -281,6 +281,7 @@ Shiitake.defaultProps = {
   throttleRate: undefined,
   tagName: undefined,
   overflowNode: '\u2026',
+  // in case someone acidentally passes something undefined in as children
   children: ''
 };
 exports.default = Shiitake;
