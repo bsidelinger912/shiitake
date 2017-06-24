@@ -61,4 +61,16 @@ describe('Shiitake', () => {
 
     }, 50);
   });
+
+  it('should use a custom overflowNode if provided', () => {
+    const el = shallow(
+      <Shiitake
+        lines={1}
+        overflowNode={<a href="https://google.com" target="_blank" rel="noopener noreferrer"> ...read more</a>}
+      >
+        Hello world
+      </Shiitake>
+    );
+    expect(el.find('a').length).toEqual(1);
+  });
 });

@@ -26,6 +26,7 @@ class Shiitake extends React.Component {
     renderFullOnServer: PropTypes.bool,
     throttleRate: PropTypes.number,
     tagName: PropTypes.string,
+    overflowNode: PropTypes.node,
   }
 
   static defaultProps = {
@@ -33,10 +34,10 @@ class Shiitake extends React.Component {
     renderFullOnServer: false,
     throttleRate: undefined,
     tagName: undefined,
+    overflowNode: '\u2026',
+    // in case someone acidentally passes something undefined in as children
+    children: '',
   }
-
-  // in case someone acidentally passes something undefined in as children
-  static defaultProps = { children: '' }
 
   constructor(props) {
     super(props);
@@ -127,8 +128,7 @@ class Shiitake extends React.Component {
 
     // are we actually trimming?
     if (this.state.testChildren.length < this.props.children.length) {
-      children = this.state.testChildren.slice(0, -3).split(' ').slice(0, -1);
-      children = `${children.join(' ')}...`;
+      children = this.state.testChildren.split(' ').slice(0, -1).join(' ');
     }
     this._handlingResize = false;
     this.setState({ children, lastCalculatedWidth: this.spreader.offsetWidth });
@@ -170,7 +170,7 @@ class Shiitake extends React.Component {
   }
 
   render() {
-    const { renderFullOnServer, className, throttleRate } = this.props;
+    const { renderFullOnServer, className, throttleRate, overflowNode } = this.props;
     const { fixHeight, children, testChildren } = this.state;
     const tagNames = { main: setTag(this.props.tagName) };
 
@@ -182,18 +182,20 @@ class Shiitake extends React.Component {
     const thisHeight = (fixHeight || 0) + 'px';
     const maxHeight = (renderFullOnServer) ? '' : thisHeight;
 
+    const overflow = (testChildren.length < this.props.children.length) ? overflowNode : null;
+
     return (
       <tagNames.main className={className || ''} {...passProps(this.props)}>
         <ResizeListener handleResize={this.handleResize} throttleRate={throttleRate} />
 
         <span style={{ ...wrapperStyles, maxHeight }}>
-          <span style={childrenStyles}>{children}</span>
+          <span style={childrenStyles}>{children}{overflow}</span>
 
           <span ref={(node) => { this.spreader = node; }} style={spreaderStyles}>{this.props.children}</span>
 
           <span style={sizerWrapperStyles}>
             <span ref={(node) => { this.sizer = node; }} style={block}>{vertSpacers}</span>
-            <span ref={(node) => { this.testChildren = node; }} style={block}>{testChildren}</span>
+            <span ref={(node) => { this.testChildren = node; }} style={block}>{testChildren}{overflow}</span>
           </span>
         </span>
       </tagNames.main>
