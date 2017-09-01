@@ -104,6 +104,13 @@ class App extends React.Component {
           </Shiitake>
         </div>
 
+        <h2>Option to truncate word if there is not space for a full single word</h2>
+        <div style={{ width: '20%' }}>
+          <Shiitake lines={1} truncateSingleWord>
+            Proposal_for_a_Directive_COM_2016_450_final_of_7-May-2016_Money_No_Money_-short.pdf
+          </Shiitake>
+        </div>
+
         <p className="read-more">
           read more <a href="https://github.com/bsidelinger912/shiitake#readme">here</a>.
         </p>

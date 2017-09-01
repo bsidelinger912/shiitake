@@ -73,4 +73,7 @@ describe('Shiitake', () => {
     );
     expect(el.find('a').length).toEqual(1);
   });
+
+  // not sure if it's possible to force the trim
+  it('should truncate a single word if the prop is passed, so it doesnt just show an elipsis');
 });

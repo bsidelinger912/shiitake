@@ -27,6 +27,7 @@ class Shiitake extends React.Component {
     throttleRate: PropTypes.number,
     tagName: PropTypes.string,
     overflowNode: PropTypes.node,
+    truncateSingleWord: PropTypes.bool,
   }
 
   static defaultProps = {
@@ -37,6 +38,7 @@ class Shiitake extends React.Component {
     overflowNode: '\u2026',
     // in case someone acidentally passes something undefined in as children
     children: '',
+    truncateSingleWord: false,
   }
 
   constructor(props) {
@@ -125,13 +127,50 @@ class Shiitake extends React.Component {
 
   _setChildren() {
     let children = this.props.children;
+    const testWords = this.state.testChildren.split(' ');
+
+    if (testWords.length < 2 && this.props.truncateSingleWord) {
+      return this._truncate(0);
+    }
 
     // are we actually trimming?
     if (this.state.testChildren.length < this.props.children.length) {
-      children = this.state.testChildren.split(' ').slice(0, -1).join(' ');
+      children = testWords.slice(0, -1).join(' ');
     }
+
     this._handlingResize = false;
     this.setState({ children, lastCalculatedWidth: this.spreader.offsetWidth });
+  }
+
+  _truncate(end) {
+    console.error('truncate called');
+
+    // just starting to increment, set up the pattern
+    if (end < 1) {
+      const firstLetter = this.state.testChildren.substring(0, 1);
+      const secondLetter = this.state.testChildren.substring(1, 2);
+
+      this.setState({ children: this.state.testChildren, testChildren: `${firstLetter} ${secondLetter}` });
+      this._callDeffered(this._truncate.bind(this, 1));
+
+    // we've incremented up to the max
+    } else if (this.testChildren.offsetHeight > this._targetHeight) {
+      this._handlingResize = false;
+      const children = this.state.testChildren.substring(0, this.state.testChildren.length - 2);
+
+      this.setState({ children, lastCalculatedWidth: this.spreader.offsetWidth });
+
+    // need to keep incrimenting up
+    } else {
+      const testChildrenSplit = this.state.testChildren.split(' ');
+      const lastLetter = testChildrenSplit.pop();
+      const lastChildren = testChildrenSplit.concat(lastLetter).join('');
+      const firstWordFromProps = this.props.children.split(' ')[0];
+      const testChildren = `${lastChildren} ${firstWordFromProps.substring(end, end + 1)}`;
+
+      this.setState({ testChildren });
+      this._callDeffered(this._truncate.bind(this, end + 1));
+    }
   }
 
   // adds the trimmed content to state and fills the sizer on resize events
