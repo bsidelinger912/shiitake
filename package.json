@@ -3,6 +3,7 @@
   "version": "2.2.2",
   "description": "Shiitake - line clamp that won't get you fired",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "npm run clean && npm run transpile && npm run bundle",
     "bundle": "node node_modules/webpack/bin/webpack.js -p --colors --display-error-details --config webpack.dist.config.js",
