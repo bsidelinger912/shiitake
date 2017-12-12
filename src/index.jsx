@@ -42,12 +42,14 @@ class Shiitake extends React.Component {
   constructor(props) {
     super(props);
 
-    const children = (props.renderFullOnServer) ? props.children : '';
+    const allChildren = (typeof props.children === 'string') ? props.children : '';
+    const children = (props.renderFullOnServer) ? allChildren : '';
 
     this.state = {
       lastCalculatedWidth: -1,
       testChildren: '',
       children,
+      allChildren,
     };
 
     this.handleResize = this.handleResize.bind(this);
@@ -61,13 +63,14 @@ class Shiitake extends React.Component {
     const { children, lines } = newProps;
 
     // if we've got different children, reset and retest
-    if (children !== this.props.children) {
-      this.setState({ lastCalculatedWidth: -1, children });
+    if (children !== this.state.allChildren) {
+      const allChildren = (typeof children === 'string') ? children : '';
+      this.setState({ lastCalculatedWidth: -1, children, allChildren });
       this._setTestChildren(0, children.length);
     } else if (lines !== this.props.lines) {
       // for a lines number change, retrim the full string
       this._callDeffered(() => {
-        this.setState({ testChildren: '', lastCalculatedWidth: -1, children: this.props.children });
+        this.setState({ testChildren: '', lastCalculatedWidth: -1, children: this.state.allChildren });
         this.handleResize();
       });
     }
@@ -85,7 +88,7 @@ class Shiitake extends React.Component {
 
     // TODO: refine this flag, make simpler
     const linear = (end - start < 6
-      || (end === this.state.testChildren.length && end !== this.props.children.length)
+      || (end === this.state.testChildren.length && end !== this.state.allChildren.length)
       || this.state.lastCalculatedWidth > -1);
 
     // do we need to trim?
@@ -98,7 +101,7 @@ class Shiitake extends React.Component {
       }
 
     // we've used all the characters in a window expand situation
-    } else if (this.state.testChildren.length === this.props.children.length) {
+    } else if (this.state.testChildren.length === this.state.allChildren.length) {
       this._setChildren();
     } else if (linear) {
       // if we just got here by decrementing one, we're good
@@ -119,15 +122,15 @@ class Shiitake extends React.Component {
     // if it's within the treshold or has already been calculated, go linear
     const trimEnd = (end - start < 6 || this.state.lastCalculatedWidth > -1) ? end : end - Math.round((end - start) / 2);
 
-    this.setState({ testChildren: this.props.children.substring(0, trimEnd) });
+    this.setState({ testChildren: this.state.allChildren.substring(0, trimEnd) });
     this._callDeffered(this._checkHeight.bind(this, start, end));
   }
 
   _setChildren() {
-    let children = this.props.children;
+    let children = this.state.allChildren;
 
     // are we actually trimming?
-    if (this.state.testChildren.length < this.props.children.length) {
+    if (this.state.testChildren.length < this.state.allChildren.length) {
       children = this.state.testChildren.split(' ').slice(0, -1).join(' ');
     }
     this._handlingResize = false;
@@ -144,7 +147,7 @@ class Shiitake extends React.Component {
 
     // set the max height right away, so that the resize throttle doesn't allow line break jumps
     // also populate with the full string if we don't have a working trimmed string yet
-    this.setState({ fixHeight: this._targetHeight, children: this.state.children || this.props.children });
+    this.setState({ fixHeight: this._targetHeight, children: this.state.children || this.state.allChildren });
 
     // was there a width change, or lines change?
     if (availableWidth !== this.state.lastCalculatedWidth && !this._handlingResize) {
@@ -153,8 +156,8 @@ class Shiitake extends React.Component {
       // first render?
       if (this.state.testChildren === '') {
         // give it the full string and check the height
-        this.setState({ testChildren: this.props.children });
-        this._callDeffered(this._checkHeight.bind(this, 0, this.props.children.length));
+        this.setState({ testChildren: this.state.allChildren });
+        this._callDeffered(this._checkHeight.bind(this, 0, this.state.allChildren.length));
 
       // window got smaller?
       } else if (availableWidth < this.state.lastCalculatedWidth) {
@@ -182,7 +185,7 @@ class Shiitake extends React.Component {
     const thisHeight = (fixHeight || 0) + 'px';
     const maxHeight = (renderFullOnServer) ? '' : thisHeight;
 
-    const overflow = (testChildren.length < this.props.children.length) ? overflowNode : null;
+    const overflow = (testChildren.length < this.state.allChildren.length) ? overflowNode : null;
 
     return (
       <tagNames.main className={className || ''} {...passProps(this.props)}>
@@ -191,7 +194,7 @@ class Shiitake extends React.Component {
         <span style={{ ...wrapperStyles, maxHeight }}>
           <span style={childrenStyles}>{children}{overflow}</span>
 
-          <span ref={(node) => { this.spreader = node; }} style={spreaderStyles}>{this.props.children}</span>
+          <span ref={(node) => { this.spreader = node; }} style={spreaderStyles}>{this.state.allChildren}</span>
 
           <span style={sizerWrapperStyles}>
             <span ref={(node) => { this.sizer = node; }} style={block}>{vertSpacers}</span>
