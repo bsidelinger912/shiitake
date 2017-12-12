@@ -30,6 +30,13 @@ describe('Shiitake', () => {
     expect(el.find('p').length).toEqual(1);
   });
 
+  it('should handle non string children', () => {
+    shallow(<Shiitake lines={1}>{null}</Shiitake>);
+    shallow(<Shiitake lines={1}>{undefined}</Shiitake>);
+    shallow(<Shiitake lines={1}>{false}</Shiitake>);
+    shallow(<Shiitake lines={1}><div>foo bar</div></Shiitake>);
+  });
+
   it('should recalculate when children or lines change', (done) => {
     const el = mount(<Shiitake lines={1}>Hello world</Shiitake>);
     const el2 = mount(<Shiitake lines={1}>Hello world</Shiitake>);
