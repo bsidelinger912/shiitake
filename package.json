@@ -1,6 +1,6 @@
 {
   "name": "shiitake",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "description": "Shiitake - line clamp that won't get you fired",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,7 +9,7 @@
     "bundle": "node node_modules/webpack/bin/webpack.js -p --colors --display-error-details --config webpack.dist.config.js",
     "build-dev": "node node_modules/webpack/bin/webpack.js --colors --display-error-details --config webpack.dev.config.js",
     "clean": "rm -rf dist && mkdir dist",
-    "transpile": "babel src --out-dir dist",
+    "transpile": "babel src --out-dir dist && cp src/index.d.ts dist/index.d.ts",
     "dev": "node node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack.config.js --hot --inline --content-base dev",
     "lint": "node node_modules/eslint/bin/eslint.js --ignore-pattern 'node_modules/' 'src/**/*.js' 'src/**/*.jsx' 'dev/**/*.js' 'dev/**/*.jsx' ",
     "test": "node node_modules/karma/bin/karma start karma.conf.js",
