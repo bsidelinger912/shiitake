@@ -27,7 +27,7 @@ class Shiitake extends React.Component {
     throttleRate: PropTypes.number,
     tagName: PropTypes.string,
     overflowNode: PropTypes.node,
-  }
+  };
 
   static defaultProps = {
     className: '',
@@ -35,9 +35,9 @@ class Shiitake extends React.Component {
     throttleRate: undefined,
     tagName: undefined,
     overflowNode: '\u2026',
-    // in case someone acidentally passes something undefined in as children
+    // in case someone accidentally passes something undefined in as children
     children: '',
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -194,9 +194,9 @@ class Shiitake extends React.Component {
         <span style={{ ...wrapperStyles, maxHeight }}>
           <span style={childrenStyles}>{children}{overflow}</span>
 
-          <span ref={(node) => { this.spreader = node; }} style={spreaderStyles}>{this.state.allChildren}</span>
+          <span ref={(node) => { this.spreader = node; }} style={spreaderStyles} aria-hidden="true">{this.state.allChildren}</span>
 
-          <span style={sizerWrapperStyles}>
+          <span style={sizerWrapperStyles} aria-hidden="true">
             <span ref={(node) => { this.sizer = node; }} style={block}>{vertSpacers}</span>
             <span ref={(node) => { this.testChildren = node; }} style={block}>{testChildren}{overflow}</span>
           </span>
