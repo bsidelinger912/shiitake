@@ -27,7 +27,7 @@ class Shiitake extends React.Component {
     throttleRate: PropTypes.number,
     tagName: PropTypes.string,
     overflowNode: PropTypes.node,
-  };
+  }
 
   static defaultProps = {
     className: '',
@@ -37,7 +37,7 @@ class Shiitake extends React.Component {
     overflowNode: '\u2026',
     // in case someone accidentally passes something undefined in as children
     children: '',
-  };
+  }
 
   constructor(props) {
     super(props);
