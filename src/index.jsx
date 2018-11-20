@@ -182,7 +182,7 @@ class Shiitake extends React.Component {
       vertSpacers.push(<span style={block} key={i}>W</span>);
     }
 
-    const thisHeight = (fixHeight || 0) + 'px';
+    const thisHeight = fixHeight ? `${fixHeight}px` : 'auto';
     const maxHeight = (renderFullOnServer) ? '' : thisHeight;
 
     const overflow = (testChildren.length < this.state.allChildren.length) ? overflowNode : null;
