@@ -91,7 +91,7 @@ $ npm install && npm run dev
     <tr>
       <td>onTruncationChange</td>
       <td>Function (isTruncated: boolean) => void</td>
-      <td>optional - defaults to '\u2026' (ellipsis), the text or html that indicates the string has been trimmed</td>
+      <td>optional - this is called whenever the text gets trimmed or stops being trimmed.  Useful for setting state based on whether the text has been truncated or not</td>
     </tr>
   </tbody>
 </table>
