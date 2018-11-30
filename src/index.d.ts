@@ -8,7 +8,8 @@ declare module 'shiitake' {
     className?: string,
     tagName?: string,
     renderFullOnServer?: boolean,
-    overflowNode?: React.ReactNode
+    overflowNode?: React.ReactNode,
+    onTruncationToggle?: (isTruncated: boolean) => void,
   }
 
   export default class Shiitake extends React.Component<ShiitakeProps> {

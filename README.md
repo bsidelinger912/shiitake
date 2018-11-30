@@ -88,6 +88,11 @@ $ npm install && npm run dev
       <td>Node</td>
       <td>optional - defaults to '\u2026' (ellipsis), the text or html that indicates the string has been trimmed</td>
     </tr>
+    <tr>
+      <td>onTruncationChange</td>
+      <td>Function (isTruncated: boolean) => void</td>
+      <td>optional - defaults to '\u2026' (ellipsis), the text or html that indicates the string has been trimmed</td>
+    </tr>
   </tbody>
 </table>
 <br />

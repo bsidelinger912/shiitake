@@ -23,10 +23,11 @@ class App extends React.Component {
   constructor() {
     super();
 
-    this.state = { ipsum, dynamicLines: 2 };
+    this.state = { ipsum, dynamicLines: 2, truncatedText: false };
 
     this.click = this.click.bind(this);
     this.toggleDynamicLines = this.toggleDynamicLines.bind(this);
+    this.toggleTruncatedText = this.toggleTruncatedText.bind(this);
   }
 
   click() {
@@ -37,7 +38,12 @@ class App extends React.Component {
     this.setState({ dynamicLines: (this.state.dynamicLines === 2) ? 1 : 2 });
   }
 
+  toggleTruncatedText(isTruncated) {
+    this.setState({ truncatedText: isTruncated });
+  }
+
   render() {
+    const { truncatedText } = this.state;
     const text = 'Cook it up all night with Shitakes';
 
     // used to verify that passing undefined is safe
@@ -102,6 +108,19 @@ class App extends React.Component {
           >
             {ipsum}
           </Shiitake>
+        </div>
+
+        <h2>Detect if text is truncated</h2>
+        <div>
+          <Shiitake
+            lines={2}
+            onTruncationChange={this.toggleTruncatedText}
+          >
+            {ipsum}
+          </Shiitake>
+          <p className="example-label">
+            {truncatedText ? 'this text is truncated ^^' : 'this text is not truncated ^^'}
+          </p>
         </div>
 
         <p className="read-more">
