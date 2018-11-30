@@ -91,7 +91,7 @@ $ npm install && npm run dev
     <tr>
       <td>onTruncationChange</td>
       <td>Function (isTruncated: boolean) => void</td>
-      <td>optional - this is called whenever the text gets trimmed or stops being trimmed.  Useful for setting state based on whether the text has been truncated or not</td>
+      <td>optional - This is called whenever the text gets trimmed or stops being trimmed.  Its useful for setting state based on whether the text has been truncated or not</td>
     </tr>
   </tbody>
 </table>
