@@ -27,6 +27,7 @@ class Shiitake extends React.Component {
     throttleRate: PropTypes.number,
     tagName: PropTypes.string,
     overflowNode: PropTypes.node,
+    onTruncationChange: PropTypes.func,
   }
 
   static defaultProps = {
@@ -37,6 +38,7 @@ class Shiitake extends React.Component {
     overflowNode: '\u2026',
     // in case someone accidentally passes something undefined in as children
     children: '',
+    onTruncationChange: undefined,
   }
 
   constructor(props) {
@@ -127,7 +129,10 @@ class Shiitake extends React.Component {
   }
 
   _setChildren() {
+    const { onTruncationChange } = this.props;
+    const { allChildren } = this.state;
     let children = this.state.allChildren;
+    const oldChildren = this.state.children;
 
     // are we actually trimming?
     if (this.state.testChildren.length < this.state.allChildren.length) {
@@ -135,6 +140,17 @@ class Shiitake extends React.Component {
     }
     this._handlingResize = false;
     this.setState({ children, lastCalculatedWidth: this.spreader.offsetWidth });
+
+    // if we  changed the length of the visible string, check if we're switching from truncated to
+    // not-truncated or vica versa
+    if (children.length !== oldChildren.length) {
+      const wasTruncatedBefore = oldChildren.length !== allChildren.length;
+      const isTruncatedNow = children.length !== allChildren.length;
+
+      if (wasTruncatedBefore !== isTruncatedNow && typeof onTruncationChange === 'function') {
+        onTruncationChange(isTruncatedNow);
+      }
+    }
   }
 
   // adds the trimmed content to state and fills the sizer on resize events
