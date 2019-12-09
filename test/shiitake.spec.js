@@ -1,5 +1,5 @@
 /* eslint-env node, mocha */
-/* eslint-disable react/jsx-filename-extension*/
+/* eslint-disable react/jsx-filename-extension */
 
 import React from 'react';
 import { shallow, mount } from 'enzyme';
@@ -45,27 +45,23 @@ describe('Shiitake', () => {
       // it should have done initial calculation by now
       expect(el.state().lastCalculatedWidth).toBeGreaterThan(-1);
 
-      const spy = expect.spyOn(el.instance(), 'handleResize');
       el.setProps({ lines: 2 });
       el.setState({ children: 'hello...' });
 
-      setTimeout(() => {
-        expect(spy).toHaveBeenCalled();
-        expect(el.state().lastCalculatedWidth).toEqual(-1);
-        expect(el.state().testChildren).toEqual('');
-        expect(el.state().children).toEqual(el.props().children);
-
-        done();
-      }, 0);
-
-      // it should have done initial calculation by now
       expect(el2.state().lastCalculatedWidth).toBeGreaterThan(-1);
+      el2.setProps({ children: 'yo there' });
 
-      const spy2 = expect.spyOn(el2.instance(), '_setTestChildren');
-      el2.setProps({ children: 'hello' });
-      expect(spy2).toHaveBeenCalled();
-      expect(el2.state().lastCalculatedWidth).toEqual(-1);
+      setTimeout(() => {
+        expect(el.find('.shiitake-visible-children').text().indexOf('Hello world')).toBeGreaterThan(-1);
+        expect(el.find('.shiitake-test-children').text().indexOf('Hello world')).toBeGreaterThan(-1);
 
+        // it should set the children then render again with the test children set
+        expect(el2.find('.shiitake-visible-children').text().indexOf('yo there')).toBeGreaterThan(-1);
+        setTimeout(() => {
+          expect(el2.find('.shiitake-test-children').text().indexOf('yo there')).toBeGreaterThan(-1);
+          done();
+        }, 0);
+      }, 0);
     }, 50);
   });
 

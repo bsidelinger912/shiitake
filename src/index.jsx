@@ -68,7 +68,9 @@ class Shiitake extends React.Component {
     if (children !== this.state.allChildren) {
       const allChildren = (typeof children === 'string') ? children : '';
       this.setState({ lastCalculatedWidth: -1, children, allChildren });
-      this._setTestChildren(0, children.length);
+      this._callDeffered(() => {
+        this._setTestChildren(0, children.length);
+      });
     } else if (lines !== this.props.lines) {
       // for a lines number change, retrim the full string
       this._callDeffered(() => {
@@ -208,13 +210,13 @@ class Shiitake extends React.Component {
         <ResizeListener handleResize={this.handleResize} throttleRate={throttleRate} />
 
         <span style={{ ...wrapperStyles, maxHeight }}>
-          <span style={childrenStyles}>{children}{overflow}</span>
+          <span className="shiitake-visible-children" style={childrenStyles}>{children}{overflow}</span>
 
           <span ref={(node) => { this.spreader = node; }} style={spreaderStyles} aria-hidden="true">{this.state.allChildren}</span>
 
           <span style={sizerWrapperStyles} aria-hidden="true">
             <span ref={(node) => { this.sizer = node; }} style={block}>{vertSpacers}</span>
-            <span ref={(node) => { this.testChildren = node; }} style={block}>{testChildren}{overflow}</span>
+            <span className="shiitake-test-children" ref={(node) => { this.testChildren = node; }} style={block}>{testChildren}{overflow}</span>
           </span>
         </span>
       </tagNames.main>
