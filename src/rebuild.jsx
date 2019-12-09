@@ -23,28 +23,25 @@ const Shiitake = (props) => {
   const spreaderEl = React.useRef();
   const testChildrenEl = React.useRef();
   const handlingResize = React.useRef(true);
+  // const initialTrim = React.useRef(true);
+  const searchStart = React.useRef(0);
+  const searchEnd = React.useRef(props.children.length);
 
   const allChildren = (typeof props.children === 'string') ? props.children : '';
   const { renderFullOnServer, className, throttleRate, overflowNode, onTruncationChange } = props;
-  const targetHeight = sizerEl.current ? sizerEl.current.offsetHeight : undefined;
   const tagNames = { main: setTag(props.tagName) };
 
   const [lastCalculatedWidth, setLastCalculatedWidth] = React.useState(-1);
   const [testChildren, setTestChildren] = React.useState('');
   const [children, setChildren] = React.useState((props.renderFullOnServer) ? allChildren : '');
 
-  // functions
-  const callDeffered = (func) => {
-    if (spreaderEl.current) {
-      func();
-    }
-  };
-
   const testChildrenRange = (start, end) => {
     const trimEnd = (end - start < 6 || lastCalculatedWidth > -1) ? end : end - Math.round((end - start) / 2);
 
+    searchStart.current = start;
+    searchEnd.current = trimEnd;
+
     setTestChildren(allChildren.substring(0, trimEnd));
-    callDeffered(checkHeight(start, end)); // eslint-disable-line no-use-before-define
   };
 
   const prepChildren = () => {
@@ -56,6 +53,7 @@ const Shiitake = (props) => {
     }
 
     handlingResize.current = false;
+    // initialTrim.current = false;
     setChildren(newChildren);
     setLastCalculatedWidth(spreaderEl.current.offsetWidth);
 
@@ -71,13 +69,14 @@ const Shiitake = (props) => {
     }
   };
 
-  const checkHeight = (start, end) => {
+  const checkHeight = () => {
     const contentHeight = testChildrenEl.current.offsetHeight;
-    const halfWay = end - Math.round((end - start) / 2);
+    const halfWay = searchEnd.current - Math.round((searchEnd.current - searchStart.current) / 2);
+    const targetHeight = sizerEl.current ? sizerEl.current.offsetHeight : undefined;
 
     // TODO: refine this flag, make simpler
-    const linear = (end - start < 6
-      || (end === testChildren.length && end !== allChildren.length)
+    const linear = (searchEnd.current - searchStart.current < 6
+      || (searchEnd.current === testChildren.length && searchEnd.current !== allChildren.length)
       || lastCalculatedWidth > -1);
 
     // do we need to trim?
@@ -86,7 +85,7 @@ const Shiitake = (props) => {
       if (linear) {
         testChildrenRange(testChildren.length, testChildren.length - 1);
       } else {
-        testChildrenRange(start, halfWay);
+        testChildrenRange(searchStart.current, halfWay);
       }
 
     // we've used all the characters in a window expand situation
@@ -94,7 +93,7 @@ const Shiitake = (props) => {
       prepChildren();
     } else if (linear) {
       // if we just got here by decrementing one, we're good
-      if (start > end) {
+      if (searchStart.current > searchEnd.current) {
         prepChildren();
       } else {
         // window grew, increment up one
@@ -102,7 +101,7 @@ const Shiitake = (props) => {
       }
     } else {
       // chunk up, still in binary search mode
-      testChildrenRange(halfWay, end);
+      testChildrenRange(halfWay, searchEnd.current);
     }
   };
 
@@ -112,27 +111,34 @@ const Shiitake = (props) => {
     const availableWidth = spreaderEl.current.offsetWidth;
 
     // was there a width change, or lines change?
-    if (availableWidth !== lastCalculatedWidth && !handlingResize.current) {
+    if (availableWidth !== lastCalculatedWidth && !handlingResize.current && !handlingResize.current) {
       handlingResize.current = true;
 
       if (availableWidth < lastCalculatedWidth) {
         // increment down one
-        callDeffered(checkHeight(testChildren.length, testChildren.length - 1));
+        searchStart.current = testChildren.length;
+        searchEnd.current = testChildren.length - 1;
+        checkHeight();
 
       // window got larger?
       } else {
         // increment up one
-        callDeffered(checkHeight(testChildren.length, testChildren.length + 1));
+        searchStart.current = testChildren.length;
+        searchEnd.current = testChildren.length + 1;
+        checkHeight();
       }
     }
   };
 
   // handle initial render or recalculate from scratch (in the case of changed lines or changed children)
   React.useEffect(() => {
-    if (testChildren === '') {
-      testChildrenRange(0, allChildren.length);
+    if (testChildren === '' && sizerEl.current) {
+      handlingResize.current = true;
+      setTestChildren(allChildren);
+    } else {
+      checkHeight();
     }
-  }, [testChildren]);
+  }, [testChildren, sizerEl.current]);
 
 
   // rendering stuff
@@ -141,7 +147,7 @@ const Shiitake = (props) => {
     vertSpacers.push(<span style={block} key={i}>W</span>);
   }
 
-  const thisHeight = (targetHeight || 0) + 'px';
+  const thisHeight = (sizerEl.current ? sizerEl.current.offsetHeight : 0) + 'px';
   const maxHeight = (renderFullOnServer) ? '' : thisHeight;
 
   const overflow = (testChildren.length < allChildren.length) ? overflowNode : null;

@@ -2,9 +2,12 @@
 /* eslint-disable react/jsx-filename-extension */
 
 import React from 'react';
-import { shallow, mount } from 'enzyme';
+import Enzyme, { shallow, mount } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
 
 import Shiitake from '../src/index';
+
+Enzyme.configure({ adapter: new Adapter() });
 
 const expect = require('expect');
 
