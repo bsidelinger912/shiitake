@@ -74,7 +74,7 @@ class App extends React.Component {
           &gt;
         </div>
 
-        {/* <h2>Specify your own tag name:</h2>
+        <h2>Specify your own tag name:</h2>
         <Shiitake tagName="p" lines={1} throttleRate={200} className="shiitake-paragraph" onClick={this.click}>
           {this.state.ipsum}
         </Shiitake>
@@ -125,7 +125,7 @@ class App extends React.Component {
 
         <p className="read-more">
           read more <a href="https://github.com/bsidelinger912/shiitake#readme">here</a>.
-        </p> */}
+        </p>
       </div>
     );
   }

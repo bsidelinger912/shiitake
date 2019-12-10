@@ -7,7 +7,6 @@ declare module 'shiitake' {
     throttleRate?: number,
     className?: string,
     tagName?: string,
-    renderFullOnServer?: boolean,
     overflowNode?: React.ReactNode,
     onTruncationChange?: (isTruncated: boolean) => void,
   }
