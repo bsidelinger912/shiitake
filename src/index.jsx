@@ -1,12 +1,7 @@
-/**
- * @class Shiitake
- * @description React line clamp that won't get you fired
- */
-
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import ResizeListener from './ResizeListener';
+import useResize from './useResize';
 
 import {
   wrapperStyles,
@@ -15,211 +10,169 @@ import {
   spreaderStyles,
   sizerWrapperStyles,
   setTag,
-  passProps,
 } from './constants';
 
-class Shiitake extends React.Component {
-  static propTypes = {
-    lines: PropTypes.number.isRequired,
-    className: PropTypes.string,
-    children: PropTypes.string.isRequired,
-    renderFullOnServer: PropTypes.bool,
-    throttleRate: PropTypes.number,
-    tagName: PropTypes.string,
-    overflowNode: PropTypes.node,
-    onTruncationChange: PropTypes.func,
-  }
+const Shiitake = (props) => {
+  const allChildren = (typeof props.children === 'string') ? props.children : '';
 
-  static defaultProps = {
-    className: '',
-    renderFullOnServer: false,
-    throttleRate: undefined,
-    tagName: undefined,
-    overflowNode: '\u2026',
-    // in case someone accidentally passes something undefined in as children
-    children: '',
-    onTruncationChange: undefined,
-  }
+  const sizerEl = React.useRef();
+  const spreaderEl = React.useRef();
+  const testChildrenEl = React.useRef();
+  const handlingResize = React.useRef(true);
+  const searchStart = React.useRef(0);
+  const searchEnd = React.useRef(allChildren.length);
 
-  constructor(props) {
-    super(props);
+  const { className, throttleRate, overflowNode, onTruncationChange } = props;
+  const tagNames = { main: setTag(props.tagName) };
 
-    const allChildren = (typeof props.children === 'string') ? props.children : '';
-    const children = (props.renderFullOnServer) ? allChildren : '';
+  const [testChildren, setTestChildren] = React.useState('');
+  const [children, setChildren] = React.useState(allChildren);  // TODO: do we really need render full on server any more???
+  const [lastCalculatedWidth, setLastCalculatedWidth] = React.useState(-1);
 
-    this.state = {
-      lastCalculatedWidth: -1,
-      testChildren: '',
-      children,
-      allChildren,
-    };
+  const testChildrenRange = (start, end) => {
+    searchStart.current = start;
+    searchEnd.current = end;
 
-    this.handleResize = this.handleResize.bind(this);
-  }
+    setTestChildren(allChildren.substring(0, end));
+  };
 
-  componentDidMount() {
-    this.handleResize();
-  }
-
-  componentWillReceiveProps(newProps) {
-    const { children, lines } = newProps;
-
-    // if we've got different children, reset and retest
-    if (children !== this.state.allChildren) {
-      const allChildren = (typeof children === 'string') ? children : '';
-      this.setState({ lastCalculatedWidth: -1, children, allChildren });
-      this._setTestChildren(0, children.length);
-    } else if (lines !== this.props.lines) {
-      // for a lines number change, retrim the full string
-      this._callDeffered(() => {
-        this.setState({ testChildren: '', lastCalculatedWidth: -1, children: this.state.allChildren });
-        this.handleResize();
-      });
-    }
-  }
-
-  _callDeffered(func) {
-    setTimeout(() => {
-      if (this.spreader) { func.bind(this)(); }
-    }, 0);
-  }
-
-  _checkHeight(start, end) {
-    const contentHeight = this.testChildren.offsetHeight;
-    const halfWay = end - Math.round((end - start) / 2);
-
-    // TODO: refine this flag, make simpler
-    const linear = (end - start < 6
-      || (end === this.state.testChildren.length && end !== this.state.allChildren.length)
-      || this.state.lastCalculatedWidth > -1);
-
-    // do we need to trim?
-    if (contentHeight > this._targetHeight) {
-      // chunk/ trim down
-      if (linear) {
-        this._setTestChildren(this.state.testChildren.length, this.state.testChildren.length - 1);
-      } else {
-        this._setTestChildren(start, halfWay);
-      }
-
-    // we've used all the characters in a window expand situation
-    } else if (this.state.testChildren.length === this.state.allChildren.length) {
-      this._setChildren();
-    } else if (linear) {
-      // if we just got here by decrementing one, we're good
-      if (start > end) {
-        this._setChildren();
-      } else {
-        // window grew, increment up one
-        this._setTestChildren(this.state.testChildren.length, this.state.testChildren.length + 1);
-      }
-    } else {
-      // chunk up, still in binary search mode
-      this._setTestChildren(halfWay, end);
-    }
-  }
-
-  // this will render test children trimmed at halfway point then come around to test height again
-  _setTestChildren(start, end) {
-    // if it's within the treshold or has already been calculated, go linear
-    const trimEnd = (end - start < 6 || this.state.lastCalculatedWidth > -1) ? end : end - Math.round((end - start) / 2);
-
-    this.setState({ testChildren: this.state.allChildren.substring(0, trimEnd) });
-    this._callDeffered(this._checkHeight.bind(this, start, end));
-  }
-
-  _setChildren() {
-    const { onTruncationChange } = this.props;
-    const { allChildren } = this.state;
-    let children = this.state.allChildren;
-    const oldChildren = this.state.children;
+  const calculationComplete = () => {
+    let newChildren = allChildren;
 
     // are we actually trimming?
-    if (this.state.testChildren.length < this.state.allChildren.length) {
-      children = this.state.testChildren.split(' ').slice(0, -1).join(' ');
+    if (testChildren.length < allChildren.length) {
+      newChildren = testChildren.split(' ').slice(0, -1).join(' ');
     }
-    this._handlingResize = false;
-    this.setState({ children, lastCalculatedWidth: this.spreader.offsetWidth });
+
+    handlingResize.current = false;
+    setChildren(newChildren);
 
     // if we  changed the length of the visible string, check if we're switching from truncated to
     // not-truncated or vica versa
-    if (children.length !== oldChildren.length) {
-      const wasTruncatedBefore = oldChildren.length !== allChildren.length;
-      const isTruncatedNow = children.length !== allChildren.length;
+    if (newChildren.length !== children.length) {
+      const wasTruncatedBefore = children.length !== allChildren.length;
+      const isTruncatedNow = newChildren.length !== allChildren.length;
 
       if (wasTruncatedBefore !== isTruncatedNow && typeof onTruncationChange === 'function') {
         onTruncationChange(isTruncatedNow);
       }
     }
-  }
+  };
 
-  // adds the trimmed content to state and fills the sizer on resize events
-  handleResize() {
-    // if we don't have a spreader, let it come around again
-    if (!this.spreader) { return; }
+  const checkHeight = () => {
+    const contentHeight = testChildrenEl.current.offsetHeight;
+    const halfWay = Math.round((searchEnd.current - searchStart.current) / 2);
+    const targetHeight = sizerEl.current ? sizerEl.current.offsetHeight : undefined;
+    const linear = searchEnd.current - searchStart.current < 6;
 
-    const availableWidth = this.spreader.offsetWidth;
-    this._targetHeight = this.sizer.offsetHeight;
-
-    // set the max height right away, so that the resize throttle doesn't allow line break jumps
-    // also populate with the full string if we don't have a working trimmed string yet
-    this.setState({ fixHeight: this._targetHeight, children: this.state.children || this.state.allChildren });
-
-    // was there a width change, or lines change?
-    if (availableWidth !== this.state.lastCalculatedWidth && !this._handlingResize) {
-      this._handlingResize = true;
-
-      // first render?
-      if (this.state.testChildren === '') {
-        // give it the full string and check the height
-        this.setState({ testChildren: this.state.allChildren });
-        this._callDeffered(this._checkHeight.bind(this, 0, this.state.allChildren.length));
-
-      // window got smaller?
-      } else if (availableWidth < this.state.lastCalculatedWidth) {
-        // increment down one
-        this._callDeffered(this._checkHeight.bind(this, this.state.testChildren.length, this.state.testChildren.length - 1));
-
-      // window got larger?
+    // do we need to trim?
+    if (contentHeight > targetHeight) {
+      // chunk/ trim down
+      if (linear) {
+        testChildrenRange(testChildren.length, testChildren.length - 1);
       } else {
-        // increment up one
-        this._callDeffered(this._checkHeight.bind(this, this.state.testChildren.length, this.state.testChildren.length + 1));
+        testChildrenRange(searchStart.current, searchEnd.current - halfWay);
       }
+
+    // we've used all the characters in a window expand situation
+    } else if (testChildren.length === allChildren.length) {
+      calculationComplete();
+    } else if (linear) {
+      // if we just got here by decrementing one, we're good
+      if (searchStart.current > searchEnd.current) {
+        calculationComplete();
+      } else {
+        // window grew, increment up one
+        testChildrenRange(testChildren.length, testChildren.length + 1);
+      }
+    } else {
+      // chunk up, still in binary search mode
+      testChildrenRange(searchEnd.current, searchEnd.current + halfWay);
     }
+  };
+
+  const startCalculation = () => {
+    searchStart.current = 0;
+    searchEnd.current = allChildren.length;
+    setLastCalculatedWidth(spreaderEl.current.offsetWidth);
+    handlingResize.current = true;
+    setTestChildren(allChildren);
+  };
+
+  const recalculate = () => {
+    // this will kick of a sequence mimicing an initial calculation, this is necessary because if we're currently showing
+    // all the children (no need to truncate) then the effect below to check height won't kick in which it needs too.
+    setTestChildren('');
+  };
+
+  const handleResize = () => {
+    if (!spreaderEl.current) { return; }
+
+    if (spreaderEl.current.offsetWidth !== lastCalculatedWidth && !handlingResize.current) {
+      recalculate();
+    }
+  };
+
+  useResize(handleResize, throttleRate);
+
+  React.useEffect(() => {
+    if (testChildren === '' && sizerEl.current) {
+      startCalculation();
+    } else {
+      checkHeight();
+    }
+  }, [testChildren, sizerEl.current]);
+
+  React.useEffect(() => {
+    // this will skip this effect on the first render
+    if (testChildren !== '') {
+      recalculate();
+    }
+  }, [props.lines]);
+
+  const vertSpacers = [];
+  for (let i = 0; i < props.lines; i++) {
+    vertSpacers.push(<span style={block} key={i}>W</span>);
   }
 
-  render() {
-    const { renderFullOnServer, className, throttleRate, overflowNode } = this.props;
-    const { fixHeight, children, testChildren } = this.state;
-    const tagNames = { main: setTag(this.props.tagName) };
+  const maxHeight = (sizerEl.current ? sizerEl.current.offsetHeight : 0) + 'px';
+  const overflow = (testChildren.length < allChildren.length) ? overflowNode : null;
 
-    const vertSpacers = [];
-    for (let i = 0; i < this.props.lines; i++) {
-      vertSpacers.push(<span style={block} key={i}>W</span>);
-    }
+  return (
+    <tagNames.main {...{ className, ...props.attributes }}>
+      <span style={{ ...wrapperStyles, maxHeight }}>
+        <span className="shiitake-children" style={childrenStyles}>{children}{overflow}</span>
 
-    const thisHeight = (fixHeight || 0) + 'px';
-    const maxHeight = (renderFullOnServer) ? '' : thisHeight;
+        <span ref={spreaderEl} style={spreaderStyles} aria-hidden="true">{allChildren}</span>
 
-    const overflow = (testChildren.length < this.state.allChildren.length) ? overflowNode : null;
-
-    return (
-      <tagNames.main className={className || ''} {...passProps(this.props)}>
-        <ResizeListener handleResize={this.handleResize} throttleRate={throttleRate} />
-
-        <span style={{ ...wrapperStyles, maxHeight }}>
-          <span style={childrenStyles}>{children}{overflow}</span>
-
-          <span ref={(node) => { this.spreader = node; }} style={spreaderStyles} aria-hidden="true">{this.state.allChildren}</span>
-
-          <span style={sizerWrapperStyles} aria-hidden="true">
-            <span ref={(node) => { this.sizer = node; }} style={block}>{vertSpacers}</span>
-            <span ref={(node) => { this.testChildren = node; }} style={block}>{testChildren}{overflow}</span>
-          </span>
+        <span style={sizerWrapperStyles} aria-hidden="true">
+          <span ref={sizerEl} style={block}>{vertSpacers}</span>
+          <span className="shiitake-test-children" ref={testChildrenEl} style={block}>{testChildren}{overflow}</span>
         </span>
-      </tagNames.main>
-    );
-  }
-}
+      </span>
+    </tagNames.main>
+  );
+};
 
-export default Shiitake;
+Shiitake.propTypes = {
+  className: PropTypes.string,
+  lines: PropTypes.number.isRequired,
+  attributes: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  children: PropTypes.string.isRequired,
+  throttleRate: PropTypes.number,
+  tagName: PropTypes.string,
+  overflowNode: PropTypes.node,
+  onTruncationChange: PropTypes.func,
+};
+
+Shiitake.defaultProps = {
+  className: '',
+  attributes: {},
+  throttleRate: undefined,
+  tagName: undefined,
+  overflowNode: '\u2026',
+  children: '',
+  onTruncationChange: undefined,
+};
+
+export default React.memo(Shiitake);
