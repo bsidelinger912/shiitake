@@ -22,7 +22,7 @@ describe('Shiitake', () => {
 
   it('should pass mouse events through', () => {
     const testClick = expect.createSpy();
-    const el = mount(<Shiitake lines={1} onClick={testClick}>Hello world</Shiitake>);
+    const el = mount(<Shiitake lines={1} attributes={{ onClick: testClick }}>Hello world</Shiitake>);
 
     el.simulate('click');
     expect(testClick).toHaveBeenCalled();

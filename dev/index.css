@@ -1,3 +1,9 @@
+a {
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .side-by-side {
   width: 100%;
   font-size: 36px;

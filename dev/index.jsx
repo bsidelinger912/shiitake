@@ -58,7 +58,7 @@ class App extends React.Component {
 
         <h2>Compare with webkit line-clamp</h2>
         <div className="side-by-side">
-          <Shiitake lines={2} throttleRate={200} className="shiitake">
+          <Shiitake lines={2} throttleRate={200} attributes={{ className: 'shiitake' }}>
             {text}
           </Shiitake>
           <div className="line-clamp">
@@ -68,14 +68,14 @@ class App extends React.Component {
 
         <h2>Create inline style with flexbox:</h2>
         <div className="shiitake-inline-wrapper">
-          <Shiitake lines={1} throttleRate={200} className="shiitake-inline">
+          <Shiitake lines={1} throttleRate={200} attributes={{ className: 'shiitake' }}>
             {text}
           </Shiitake>
           &gt;
         </div>
 
         <h2>Specify your own tag name:</h2>
-        <Shiitake tagName="p" lines={1} throttleRate={200} className="shiitake-paragraph" onClick={this.click}>
+        <Shiitake tagName="p" lines={1} throttleRate={200} attributes={{ className: 'shiitake', onClick: this.onClick }}>
           {this.state.ipsum}
         </Shiitake>
 
@@ -121,6 +121,13 @@ class App extends React.Component {
           <p className="example-label">
             {truncatedText ? 'this text is truncated ^^' : 'this text is not truncated ^^'}
           </p>
+        </div>
+
+        <h2>Truncate the contents of an anchor tag</h2>
+        <div>
+          <Shiitake lines={2} tagName="a" attributes={{ href: 'https://github.com/bsidelinger912/shiitake#readme' }}>
+            {ipsum}
+          </Shiitake>
         </div>
 
         <p className="read-more">

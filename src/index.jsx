@@ -10,7 +10,6 @@ import {
   spreaderStyles,
   sizerWrapperStyles,
   setTag,
-  passProps,
 } from './constants';
 
 const Shiitake = (props) => {
@@ -140,7 +139,7 @@ const Shiitake = (props) => {
   const overflow = (testChildren.length < allChildren.length) ? overflowNode : null;
 
   return (
-    <tagNames.main className={className || ''} {...passProps(props)}>
+    <tagNames.main {...{ className, ...props.attributes }}>
       <span style={{ ...wrapperStyles, maxHeight }}>
         <span className="shiitake-children" style={childrenStyles}>{children}{overflow}</span>
 
@@ -156,8 +155,9 @@ const Shiitake = (props) => {
 };
 
 Shiitake.propTypes = {
-  lines: PropTypes.number.isRequired,
   className: PropTypes.string,
+  lines: PropTypes.number.isRequired,
+  attributes: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   children: PropTypes.string.isRequired,
   throttleRate: PropTypes.number,
   tagName: PropTypes.string,
@@ -167,6 +167,7 @@ Shiitake.propTypes = {
 
 Shiitake.defaultProps = {
   className: '',
+  attributes: {},
   throttleRate: undefined,
   tagName: undefined,
   overflowNode: '\u2026',

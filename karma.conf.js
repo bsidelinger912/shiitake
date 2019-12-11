@@ -38,7 +38,7 @@ module.exports = (config) => {
     },
 
     reporters: ['spec'],
-    browsers: ['Chrome', 'Safari', 'Firefox', 'PhantomJS'],
+    browsers: ['Chrome', 'Safari', 'Firefox'],
 
     // web server port
     port: 9876,
