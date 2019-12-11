@@ -18,7 +18,7 @@ import Shiitake from 'shiitake';
 
 export class App extends React.Component {
   render() {
-    const text = 'Cook it up all night with Shitakes';
+    const text = 'Cooking with Shitakes';
 
     return (
       <div>
@@ -51,7 +51,7 @@ $ npm install && npm run dev
 The primary change with v3 is that we drop support for React versions lower than 16.8.  This allows Shiitake to 
 be written with hooks.  In the re-write I was able to fix several bugs that were hard to deal identify and reason about in a Class Component.  I was also able to make some performance improvements, specifically around resize handling and a better debouncing hook.  These things could have been done without hooks, but I find hooks make it easy to reason about things and identify opportunities for improvements and flawed logic.
 
-The other big difference is the new "attributes" prop.  This allows you to pass any valid JSX attributes (props) into the outer rendered element.  This is the same element that is defined by the "tagName" prop.  This way you can have more control over the rendered result.  We also added classes for some of the inner spans which you can target in css for further control.  In this change we dropped support for passing event handlers like "onClick" at the top level Shiitake props, but you can pass them now in attributes.  This means any event supported by the tagName of your choice is now supported in addition to other attributes like "title", "href" etc.  The top level "className" prop is depricated in favor of passing className inside of "attributes", but is still suppored until the next major version when it will be removed.  
+The other big difference is the new "attributes" prop.  This allows you to pass any valid JSX attributes (props) into the outer rendered element.  This is the same element that is defined by the "tagName" prop.  This way you can have more control over the rendered result.  We also added classes for some of the inner spans which you can target in css for further control.  In this change we dropped support for passing event handlers like "onClick" at the top level Shiitake props, but you can pass them now in attributes.  This means any event supported by the tagName of your choice is now supported in addition to other attributes like "title", "href" etc.  The top level "className" prop is deprecated in favor of passing className inside of "attributes", but is still supported until the next major version when it will be removed.  
 
 ### Props:
 
@@ -77,7 +77,7 @@ The other big difference is the new "attributes" prop.  This allows you to pass 
     <tr>
       <td>attributes</td>
       <td>Object</td>
-      <td>optional - allows you to pass HTMLAttributes to the rendered outer element.  You can pass valid attirbutes for any whitelisted react element (see tagName property).  In Typescript the type is a union of the HTMLAttributes for each whitelisted element type or tagName.</td>
+      <td>optional - allows you to pass HTMLAttributes to the rendered outer element.  You can pass valid attributes for any whitelisted react element (see tagName property).  In Typescript the type is a union of the HTMLAttributes for each whitelisted element type or tagName.</td>
     </tr>
     <tr>
       <td>className</td>
