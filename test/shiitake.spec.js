@@ -54,4 +54,11 @@ describe('Shiitake', () => {
     );
     expect(el.find('a').length).toBeGreaterThan(0);
   });
+
+  it('should update when content changes', () => {
+    const el = mount(<Shiitake lines={1}>Hello world</Shiitake>);
+    el.setProps({ children: 'Hello Shiitake' });
+
+    expect(el.find('.shiitake-children').text()).toEqual('Hello Shiitake');
+  });
 });

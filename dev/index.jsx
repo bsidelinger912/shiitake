@@ -23,11 +23,12 @@ class App extends React.Component {
   constructor() {
     super();
 
-    this.state = { ipsum, dynamicLines: 2, truncatedText: false };
+    this.state = { ipsum, dynamicLines: 2, truncatedText: false, dynamicText: ipsum };
 
     this.click = this.click.bind(this);
     this.toggleDynamicLines = this.toggleDynamicLines.bind(this);
     this.toggleTruncatedText = this.toggleTruncatedText.bind(this);
+    this.toggleDynamicText = this.toggleDynamicText.bind(this);
   }
 
   click() {
@@ -40,6 +41,11 @@ class App extends React.Component {
 
   toggleTruncatedText(isTruncated) {
     this.setState({ truncatedText: isTruncated });
+  }
+
+  toggleDynamicText() {
+    const dynamicText = this.state.dynamicText === ipsum ? ipsum2 : ipsum;
+    this.setState({ dynamicText });
   }
 
   render() {
@@ -98,6 +104,12 @@ class App extends React.Component {
         <div>
           <Shiitake lines={this.state.dynamicLines}>{ipsum}</Shiitake>
           <button onClick={this.toggleDynamicLines}>Change to {(this.state.dynamicLines === 2) ? '1 line' : '2 lines'}</button>
+        </div>
+
+        <h2>Change content dynamically</h2>
+        <div>
+          <Shiitake lines={1}>{this.state.dynamicText}</Shiitake>
+          <button onClick={this.toggleDynamicText}>Change text</button>
         </div>
 
         <h2>Custom overflow node</h2>

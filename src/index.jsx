@@ -130,6 +130,12 @@ const Shiitake = (props) => {
     }
   }, [props.lines]);
 
+  React.useEffect(() => {
+    if (testChildren !== '') {
+      recalculate();
+    }
+  }, [allChildren]);
+
   const vertSpacers = [];
   for (let i = 0; i < props.lines; i++) {
     vertSpacers.push(<span style={block} key={i}>W</span>);
